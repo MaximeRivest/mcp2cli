@@ -2,13 +2,48 @@ package jsonrpc
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
 )
 
+// readMessage reads a JSON-RPC message, auto-detecting between
+// Content-Length framing (LSP-style) and bare JSON lines (newline-delimited).
 func readMessage(reader *bufio.Reader) ([]byte, error) {
+	for {
+		// Peek at the first byte to decide framing style
+		firstBytes, err := reader.Peek(1)
+		if err != nil {
+			return nil, err
+		}
+
+		if firstBytes[0] == '{' {
+			// Bare JSON line
+			line, err := reader.ReadBytes('\n')
+			if err != nil && err != io.EOF {
+				return nil, err
+			}
+			line = bytes.TrimSpace(line)
+			if len(line) == 0 {
+				continue
+			}
+			return line, nil
+		}
+
+		if firstBytes[0] == '\n' || firstBytes[0] == '\r' {
+			// Skip blank lines between messages
+			_, _ = reader.ReadByte()
+			continue
+		}
+
+		// Content-Length framed message
+		return readContentLengthMessage(reader)
+	}
+}
+
+func readContentLengthMessage(reader *bufio.Reader) ([]byte, error) {
 	contentLength := -1
 	for {
 		line, err := reader.ReadString('\n')
@@ -41,10 +76,10 @@ func readMessage(reader *bufio.Reader) ([]byte, error) {
 	return payload, nil
 }
 
+// writeMessage writes a JSON-RPC message as a bare JSON line (newline-delimited).
+// This is compatible with both bare-JSON-line servers and Content-Length servers
+// that also accept newline-delimited input.
 func writeMessage(writer io.Writer, payload []byte) error {
-	if _, err := fmt.Fprintf(writer, "Content-Length: %d\r\n\r\n", len(payload)); err != nil {
-		return err
-	}
-	_, err := writer.Write(payload)
+	_, err := writer.Write(append(payload, '\n'))
 	return err
 }

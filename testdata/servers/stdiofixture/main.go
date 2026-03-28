@@ -2,12 +2,11 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
-	"strconv"
-	"strings"
 )
 
 type request struct {
@@ -209,33 +208,23 @@ func handlePromptGet(req request) {
 }
 
 func readMessage(reader *bufio.Reader) ([]byte, error) {
-	contentLength := -1
 	for {
-		line, err := reader.ReadString('\n')
+		line, err := reader.ReadBytes('\n')
 		if err != nil {
+			if err == io.EOF && len(bytes.TrimSpace(line)) > 0 {
+				return bytes.TrimSpace(line), nil
+			}
 			return nil, err
 		}
-		if line == "\r\n" || line == "\n" {
-			break
-		}
-		key, value, ok := strings.Cut(line, ":")
-		if !ok {
+		line = bytes.TrimSpace(line)
+		if len(line) == 0 {
 			continue
 		}
-		if strings.EqualFold(strings.TrimSpace(key), "Content-Length") {
-			parsed, err := strconv.Atoi(strings.TrimSpace(value))
-			if err != nil {
-				return nil, err
-			}
-			contentLength = parsed
+		if line[0] == '{' {
+			return line, nil
 		}
+		// skip non-JSON lines (e.g. Content-Length headers)
 	}
-	if contentLength < 0 {
-		return nil, fmt.Errorf("missing Content-Length")
-	}
-	payload := make([]byte, contentLength)
-	_, err := io.ReadFull(reader, payload)
-	return payload, err
 }
 
 func respond(id json.RawMessage, result any) {
@@ -306,7 +295,7 @@ func writeMessage(message any) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Printf("Content-Length: %d\r\n\r\n", len(payload))
+	payload = append(payload, '\n')
 	if _, err := os.Stdout.Write(payload); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
