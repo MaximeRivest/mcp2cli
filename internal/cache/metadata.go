@@ -72,6 +72,18 @@ func (s *Store) Load(server *config.Server) (*Metadata, error) {
 	return &metadata, nil
 }
 
+// LoadFresh returns cached metadata only if it is newer than the TTL.
+func (s *Store) LoadFresh(server *config.Server, ttl time.Duration) (*Metadata, error) {
+	metadata, err := s.Load(server)
+	if err != nil {
+		return nil, err
+	}
+	if ttl > 0 && !metadata.SavedAt.IsZero() && time.Since(metadata.SavedAt) > ttl {
+		return nil, os.ErrNotExist
+	}
+	return metadata, nil
+}
+
 func cacheKey(server *config.Server) string {
 	if server == nil {
 		return "unknown"

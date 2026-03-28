@@ -36,6 +36,9 @@ func newResourcesCommand(state *State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "resources [server] [resource]",
 		Short: "List resources or inspect one resource",
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return metadataResourcesCompletion(state, cmd, args, toComplete)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			outputMode, err := normalizeOutputMode(output)
 			if err != nil {
@@ -45,14 +48,13 @@ func newResourcesCommand(state *State) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: explicitServer, Command: command, URL: urlValue, CWD: cwd, Env: envVars, Headers: headers, Auth: authMode, BearerEnv: bearerEnv}, timeout)
+			ctx, cancel := context.WithTimeout(cmd.Context(), timeout)
+			defer cancel()
+			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: explicitServer, Command: command, URL: urlValue, CWD: cwd, Env: envVars, Headers: headers, Auth: authMode, BearerEnv: bearerEnv}, ctx)
 			if err != nil {
 				return err
 			}
 			defer func() { _ = session.Close() }()
-
-			ctx, cancel := context.WithTimeout(cmd.Context(), timeout)
-			defer cancel()
 			resources, err := session.ListResources(ctx)
 			if err != nil {
 				return err
@@ -88,6 +90,9 @@ func newResourceCommand(state *State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "resource [server] <resource>",
 		Short: "Read a resource",
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return metadataResourcesCompletion(state, cmd, args, toComplete)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			outputMode, err := normalizeOutputMode(output)
 			if err != nil {
@@ -97,13 +102,13 @@ func newResourceCommand(state *State) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: explicitServer, Command: command, URL: urlValue, CWD: cwd, Env: envVars, Headers: headers, Auth: authMode, BearerEnv: bearerEnv}, timeout)
+			ctx, cancel := context.WithTimeout(cmd.Context(), timeout)
+			defer cancel()
+			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: explicitServer, Command: command, URL: urlValue, CWD: cwd, Env: envVars, Headers: headers, Auth: authMode, BearerEnv: bearerEnv}, ctx)
 			if err != nil {
 				return err
 			}
 			defer func() { _ = session.Close() }()
-			ctx, cancel := context.WithTimeout(cmd.Context(), timeout)
-			defer cancel()
 			resources, err := session.ListResources(ctx)
 			if err != nil {
 				return err
@@ -139,6 +144,9 @@ func newPromptsCommand(state *State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "prompts [server] [prompt]",
 		Short: "List prompts or inspect one prompt",
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return metadataPromptsCompletion(state, cmd, args, toComplete)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			outputMode, err := normalizeOutputMode(output)
 			if err != nil {
@@ -148,13 +156,13 @@ func newPromptsCommand(state *State) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: explicitServer, Command: command, URL: urlValue, CWD: cwd, Env: envVars, Headers: headers, Auth: authMode, BearerEnv: bearerEnv}, timeout)
+			ctx, cancel := context.WithTimeout(cmd.Context(), timeout)
+			defer cancel()
+			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: explicitServer, Command: command, URL: urlValue, CWD: cwd, Env: envVars, Headers: headers, Auth: authMode, BearerEnv: bearerEnv}, ctx)
 			if err != nil {
 				return err
 			}
 			defer func() { _ = session.Close() }()
-			ctx, cancel := context.WithTimeout(cmd.Context(), timeout)
-			defer cancel()
 			prompts, err := session.ListPrompts(ctx)
 			if err != nil {
 				return err
@@ -180,6 +188,9 @@ func newPromptCommand(state *State) *cobra.Command {
 		Use:                "prompt [server] <prompt> [args...]",
 		Short:              "Render a prompt",
 		DisableFlagParsing: true,
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return promptCommandCompletion(state, cmd, args, toComplete)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			parsed, err := parsePromptInvocationTokens(state, args)
 			if err != nil {
@@ -192,13 +203,13 @@ func newPromptCommand(state *State) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: parsed.ServerName, Command: parsed.Command, URL: parsed.URL, CWD: parsed.CWD, Env: parsed.Env, Headers: parsed.Headers, Auth: parsed.Auth, BearerEnv: parsed.BearerEnv}, parsed.Timeout)
+			ctx, cancel := context.WithTimeout(cmd.Context(), parsed.Timeout)
+			defer cancel()
+			resolved, session, err := openSession(state, metadataConnectionOptions{ExplicitName: parsed.ServerName, Command: parsed.Command, URL: parsed.URL, CWD: parsed.CWD, Env: parsed.Env, Headers: parsed.Headers, Auth: parsed.Auth, BearerEnv: parsed.BearerEnv}, ctx)
 			if err != nil {
 				return err
 			}
 			defer func() { _ = session.Close() }()
-			ctx, cancel := context.WithTimeout(cmd.Context(), parsed.Timeout)
-			defer cancel()
 			prompts, err := session.ListPrompts(ctx)
 			if err != nil {
 				return err
@@ -249,7 +260,7 @@ type metadataConnectionOptions struct {
 	BearerEnv    string
 }
 
-func openSession(state *State, options metadataConnectionOptions, timeout time.Duration) (*serverref.Resolved, mcpclient.Session, error) {
+func openSession(state *State, options metadataConnectionOptions, ctx context.Context) (*serverref.Resolved, mcpclient.Session, error) {
 	repo, err := state.Repo()
 	if err != nil {
 		return nil, nil, err
@@ -270,8 +281,6 @@ func openSession(state *State, options metadataConnectionOptions, timeout time.D
 	if err != nil {
 		return nil, nil, err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
 	session, err := mcpclient.Connect(ctx, resolved.Server, headers)
 	if err != nil {
 		return nil, nil, err

@@ -43,6 +43,9 @@ func newToolsCommand(state *State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tools [server] [tool]",
 		Short: "List tools or inspect one tool",
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return metadataToolsCompletion(state, cmd, args, toComplete)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			outputMode, err := normalizeOutputMode(output)
 			if err != nil {
@@ -142,6 +145,9 @@ func newToolCommand(state *State) *cobra.Command {
 		Use:                "tool [server] <tool> [args...]",
 		Short:              "Invoke a tool",
 		DisableFlagParsing: true,
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return toolCommandCompletion(state, cmd, args, toComplete)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			parsed, err := parseToolInvocationTokens(state, args)
 			if err != nil {

@@ -5,6 +5,7 @@ go 1.24
 require (
 	github.com/99designs/keyring v1.2.2
 	github.com/adrg/xdg v0.5.3
+	github.com/chzyer/readline v1.5.1
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/spf13/cobra v1.9.1

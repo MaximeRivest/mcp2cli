@@ -59,7 +59,7 @@ func NewRootCommand(opts Options) (*cobra.Command, error) {
 	root.AddCommand(newResourceCommand(state))
 	root.AddCommand(newPromptsCommand(state))
 	root.AddCommand(newPromptCommand(state))
-	root.AddCommand(newNotImplementedCommand(state, "shell", "Open an interactive MCP shell"))
+	root.AddCommand(newShellCommand(state))
 	root.AddCommand(newDoctorCommand(state))
 
 	return root, nil
