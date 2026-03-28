@@ -73,6 +73,86 @@ func TestToolCommandWithInput(t *testing.T) {
 	}
 }
 
+func TestToolCommandWithSchemaFlagsAndPositionals(t *testing.T) {
+	t.Setenv("XDG_CONFIG_HOME", filepath.Join(t.TempDir(), "config"))
+	t.Setenv("XDG_DATA_HOME", filepath.Join(t.TempDir(), "data"))
+
+	repo, err := config.NewRepository("")
+	if err != nil {
+		t.Fatalf("NewRepository: %v", err)
+	}
+	if err := repo.UpsertServer(config.SourceGlobal, "weather", &config.Server{Command: fixtureCommand(t)}); err != nil {
+		t.Fatalf("UpsertServer: %v", err)
+	}
+
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	if err != nil {
+		t.Fatalf("NewRootCommand: %v", err)
+	}
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+	root.SetOut(stdout)
+	root.SetErr(stderr)
+	root.SetArgs([]string{"tool", "weather", "get-forecast", "--latitude", "37.7", "--longitude", "-122.4", "-o", "json"})
+
+	if err := root.Execute(); err != nil {
+		t.Fatalf("Execute flags: %v\nstderr: %s", err, stderr.String())
+	}
+	if !strings.Contains(stdout.String(), `"latitude": 37.7`) || !strings.Contains(stdout.String(), `"longitude": -122.4`) {
+		t.Fatalf("unexpected JSON output: %s", stdout.String())
+	}
+
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	if err != nil {
+		t.Fatalf("NewRootCommand: %v", err)
+	}
+	stdout.Reset()
+	stderr.Reset()
+	root.SetOut(stdout)
+	root.SetErr(stderr)
+	root.SetArgs([]string{"tool", "weather", "get-forecast", "37.7", "-122.4"})
+
+	if err := root.Execute(); err != nil {
+		t.Fatalf("Execute positionals: %v\nstderr: %s", err, stderr.String())
+	}
+	if got := strings.TrimSpace(stdout.String()); got != "Sunny with light winds" {
+		t.Fatalf("positional tool output = %q, want %q", got, "Sunny with light winds")
+	}
+}
+
+func TestToolsInspectOutput(t *testing.T) {
+	t.Setenv("XDG_CONFIG_HOME", filepath.Join(t.TempDir(), "config"))
+	t.Setenv("XDG_DATA_HOME", filepath.Join(t.TempDir(), "data"))
+
+	repo, err := config.NewRepository("")
+	if err != nil {
+		t.Fatalf("NewRepository: %v", err)
+	}
+	if err := repo.UpsertServer(config.SourceGlobal, "weather", &config.Server{Command: fixtureCommand(t)}); err != nil {
+		t.Fatalf("UpsertServer: %v", err)
+	}
+
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	if err != nil {
+		t.Fatalf("NewRootCommand: %v", err)
+	}
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+	root.SetOut(stdout)
+	root.SetErr(stderr)
+	root.SetArgs([]string{"tools", "weather", "get-forecast"})
+
+	if err := root.Execute(); err != nil {
+		t.Fatalf("Execute inspect: %v\nstderr: %s", err, stderr.String())
+	}
+	output := stdout.String()
+	for _, needle := range []string{"NAME", "USAGE", "ARGS", "--latitude <float>", "--longitude <float>"} {
+		if !strings.Contains(output, needle) {
+			t.Fatalf("inspect output missing %q:\n%s", needle, output)
+		}
+	}
+}
+
 func TestDirectCommandMode(t *testing.T) {
 	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
 	if err != nil {
