@@ -1,0 +1,20 @@
+# Binaries
+bin/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go
+coverage.out
+.coverprofile
+vendor/
+
+# Editors / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Local env
+.env

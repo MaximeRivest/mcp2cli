@@ -1387,3 +1387,72 @@ This keeps the delightful API grounded in tests, not just intention.
 6. then build the delightful tool-argument parser
 
 That path gets to visible value quickly while protecting the hardest part of the product: the runtime CLI UX.
+
+
+# Round 1: 
+
+## AI response
+
+```text
+ Started implementation.
+
+ What’s in now:
+ - Go module/bootstrap
+ - root CLI
+ - config storage
+ - server registry commands
+ - expose/unexpose commands
+ - real exposed-command shims
+ - multicall mode for mcp-weather / wea
+ - tests + CI scaffold
+
+ Implemented commands:
+ - mcp2cli version
+ - mcp2cli add
+ - mcp2cli ls
+ - mcp2cli rm
+ - mcp2cli expose
+ - mcp2cli unexpose
+ - mcp2cli completion
+
+ Implemented behavior:
+ - mcp2cli expose weather creates default mcp-weather
+ - mcp2cli expose weather --as wea creates wea
+ - --as is treated as the full exposed command name
+ - exposed commands route shorthand tool calls:
+     - wea get-forecast ... rewrites to wea tool get-forecast ...
+
+ Files added:
+ - go.mod
+ - cmd/mcp2cli/main.go
+ - internal/app/invocation.go
+ - internal/config/config.go
+ - internal/expose/expose.go
+ - internal/cli/root.go
+ - internal/cli/manage.go
+ - internal/cli/version.go
+ - internal/cli/completion.go
+ - internal/cli/stubs.go
+ - tests in:
+     - internal/app/invocation_test.go
+     - internal/config/config_test.go
+ - bootstrap files:
+     - .gitignore
+     - Makefile
+     - .github/workflows/ci.yml
+     - .goreleaser.yaml
+
+ Current status:
+ - config/registry/expose layer works
+ - MCP transport/tool execution commands are still stubbed
+
+ Validation:
+ - go test ./... passes
+
+ Next best step:
+ 1. implement Phase 2 stdio MCP client
+ 2. make mcp2cli tools --command ... work for real
+ 3. then make exposed commands like wea tools work on top of that
+
+ If you want, I can continue immediately with the stdio transport and real tools support.
+```
