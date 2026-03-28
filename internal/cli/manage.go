@@ -19,19 +19,45 @@ func newAddCommand(state *State) *cobra.Command {
 		bearerEnv string
 		local     bool
 		roots     []string
+		as        string
+		noExpose  bool
 	)
 
 	cmd := &cobra.Command{
-		Use:   "add <name>",
+		Use:   "add <name> [command-or-url]",
 		Short: "Register a server",
-		Args:  cobra.ExactArgs(1),
+		Long: `Register a server for repeated use.
+
+The second argument is the command to start a local server, or a URL for a remote one.
+URLs (starting with http:// or https://) are detected automatically.
+
+Examples:
+  mcp2cli add weather 'npx -y @h1deya/mcp-server-weather'
+  mcp2cli add notion https://mcp.notion.com/mcp --auth oauth
+  mcp2cli add acme https://api.acme.dev/mcp --bearer-env ACME_TOKEN`,
+		Args: cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			name, err := config.NormalizeCommandName(args[0])
 			if err != nil {
 				return err
 			}
+
+			// Second positional: auto-detect URL vs command
+			if len(args) == 2 {
+				target := strings.TrimSpace(args[1])
+				if strings.HasPrefix(target, "http://") || strings.HasPrefix(target, "https://") {
+					if url == "" {
+						url = target
+					}
+				} else {
+					if command == "" {
+						command = target
+					}
+				}
+			}
+
 			if command == "" && url == "" {
-				return fmt.Errorf("one of --command or --url is required")
+				return fmt.Errorf("usage: mcp2cli add <name> <command-or-url>")
 			}
 			if command != "" && url != "" {
 				return fmt.Errorf("--command and --url are mutually exclusive")
@@ -58,17 +84,40 @@ func newAddCommand(state *State) *cobra.Command {
 				return err
 			}
 
-			fmt.Fprintf(cmd.OutOrStdout(), "added server %q to %s config\n", name, scope)
+			fmt.Fprintf(cmd.OutOrStdout(), "added server %q\n", name)
+
+			// Auto-expose unless opted out
+			if !noExpose {
+				exposedName := as
+				if exposedName == "" {
+					exposedName, err = config.DefaultExposeName(name)
+					if err != nil {
+						return nil // server added, expose is best-effort
+					}
+				}
+				_ = repo.AddExpose(scope, name, exposedName)
+				executable, err := os.Executable()
+				if err == nil {
+					shimPath, err := expose.Create(repo.Paths.ExposeBinDir, exposedName, executable)
+					if err == nil {
+						fmt.Fprintf(cmd.OutOrStdout(), "exposed as %q (%s)\n", exposedName, shimPath)
+					}
+				}
+			}
+
+			fmt.Fprintf(cmd.OutOrStdout(), "\nnow use it:\n  mcp2cli %s tools\n  mcp2cli %s shell\n", name, name)
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&command, "command", "", "Local server command to run")
-	cmd.Flags().StringVar(&url, "url", "", "Remote MCP server URL")
-	cmd.Flags().StringVar(&auth, "auth", "", "Authentication mode")
-	cmd.Flags().StringVar(&bearerEnv, "bearer-env", "", "Environment variable containing a bearer token")
-	cmd.Flags().StringSliceVar(&roots, "root", nil, "Root path exposed to the server (repeatable)")
+	cmd.Flags().StringVar(&command, "command", "", "Local server command (alternative to positional arg)")
+	cmd.Flags().StringVar(&url, "url", "", "Remote server URL (alternative to positional arg)")
+	cmd.Flags().StringVar(&auth, "auth", "", "Auth mode (e.g. oauth)")
+	cmd.Flags().StringVar(&bearerEnv, "bearer-env", "", "Env var containing a bearer token")
+	cmd.Flags().StringSliceVar(&roots, "root", nil, "Root path (repeatable)")
 	cmd.Flags().BoolVar(&local, "local", false, "Write to .mcp2cli.yaml instead of global config")
+	cmd.Flags().StringVar(&as, "as", "", "Custom exposed command name")
+	cmd.Flags().BoolVar(&noExpose, "no-expose", false, "Skip creating an exposed command")
 	return cmd
 }
 
@@ -91,19 +140,12 @@ func newListCommand(state *State) *cobra.Command {
 			}
 
 			writer := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 0, 2, ' ', 0)
-			fmt.Fprintln(writer, "NAME\tSOURCE\tTYPE\tEXPOSED\tTARGET")
 			for _, server := range servers {
-				exposed := "-"
-				if len(server.ExposeAs) > 0 {
-					exposed = strings.Join(server.ExposeAs, ",")
-				}
-				typeName := "command"
 				target := server.Command
 				if server.URL != "" {
-					typeName = "url"
 					target = server.URL
 				}
-				fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%s\n", server.Name, server.Source, typeName, exposed, target)
+				fmt.Fprintf(writer, "%s\t%s\n", server.Name, target)
 			}
 			return writer.Flush()
 		},
