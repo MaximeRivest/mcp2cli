@@ -14,70 +14,34 @@ MCP (Model Context Protocol) is an emerging standard that lets AI tools, APIs, a
 
 ## Installation
 
-`mcp2cli` is a single binary. No Go, Python, or Node.js runtime needed.
-
-### macOS
-
-Open **Terminal** and paste:
+### macOS and Linux
 
 ```bash
-# Apple Silicon (M1/M2/M3/M4 — most modern Macs)
-curl -L -o mcp2cli https://github.com/MaximeRivest/mcp2cli/releases/latest/download/mcp2cli-darwin-arm64
-chmod +x mcp2cli
-sudo mv mcp2cli /usr/local/bin/
+curl -fsSL https://raw.githubusercontent.com/MaximeRivest/mcp2cli/main/install.sh | sh
 ```
 
-<details>
-<summary>Intel Mac?</summary>
-
-```bash
-curl -L -o mcp2cli https://github.com/MaximeRivest/mcp2cli/releases/latest/download/mcp2cli-darwin-amd64
-chmod +x mcp2cli
-sudo mv mcp2cli /usr/local/bin/
-```
-
-</details>
-
-### Linux
-
-Open a terminal and paste:
-
-```bash
-curl -L -o mcp2cli https://github.com/MaximeRivest/mcp2cli/releases/latest/download/mcp2cli-linux-amd64
-chmod +x mcp2cli
-sudo mv mcp2cli /usr/local/bin/
-```
-
-<details>
-<summary>ARM64 (Raspberry Pi, etc.)?</summary>
-
-```bash
-curl -L -o mcp2cli https://github.com/MaximeRivest/mcp2cli/releases/latest/download/mcp2cli-linux-arm64
-chmod +x mcp2cli
-sudo mv mcp2cli /usr/local/bin/
-```
-
-</details>
+This downloads the right binary for your platform, installs it, and sets up shell completions — all in one step.
 
 ### Windows
 
-1. Download [`mcp2cli.exe`](https://github.com/MaximeRivest/mcp2cli/releases/latest/download/mcp2cli-windows-amd64.exe)
-2. Rename the file to `mcp2cli.exe`
-3. Put it somewhere on your `PATH`, for example `C:\Users\YourName\bin\`
-
-Or paste this into **PowerShell**:
-
 ```powershell
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin" | Out-Null
-Invoke-WebRequest -Uri "https://github.com/MaximeRivest/mcp2cli/releases/latest/download/mcp2cli-windows-amd64.exe" -OutFile "$env:USERPROFILE\bin\mcp2cli.exe"
-$env:PATH += ";$env:USERPROFILE\bin"
+irm https://raw.githubusercontent.com/MaximeRivest/mcp2cli/main/install.ps1 | iex
 ```
 
-### Check that it worked
+### Verify
+
+Open a **new** terminal and run:
 
 ```bash
 mcp2cli version
 ```
+
+<details>
+<summary>Manual install (if you prefer)</summary>
+
+`mcp2cli` is a single binary. Download the right one for your platform from the [releases page](https://github.com/MaximeRivest/mcp2cli/releases/latest), make it executable, and put it in your `PATH`.
+
+</details>
 
 ---
 
