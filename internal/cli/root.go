@@ -60,7 +60,10 @@ func NewRootCommand(opts Options) (*cobra.Command, error) {
 	root.AddCommand(newPromptsCommand(state))
 	root.AddCommand(newPromptCommand(state))
 	root.AddCommand(newShellCommand(state))
+	root.AddCommand(newUpCommand(state))
+	root.AddCommand(newDownCommand(state))
 	root.AddCommand(newDoctorCommand(state))
+	root.AddCommand(newDaemonCommand(state))
 
 	return root, nil
 }

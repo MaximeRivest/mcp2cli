@@ -33,6 +33,7 @@ type ElicitationHandler func(ctx context.Context, params types.ElicitRequestPara
 // ConnectOptions configures optional client behaviors.
 type ConnectOptions struct {
 	ElicitationHandler ElicitationHandler
+	DaemonCheck        DaemonChecker
 }
 
 // ConnectStdio starts a stdio MCP session and performs the initialize handshake.

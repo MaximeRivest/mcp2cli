@@ -34,10 +34,25 @@ type HTTPClient struct {
 	nextID  int64
 }
 
-// Connect selects stdio or HTTP transport based on the resolved server.
+// DaemonChecker is an optional function that checks whether a local daemon
+// is running for a server and returns an HTTP client + URL to reach it.
+type DaemonChecker func(serverName string) (client *http.Client, url string, running bool)
+
+// Connect selects the fastest available transport:
+// 1. Running daemon (if DaemonCheck is set and finds one)
+// 2. Remote HTTP (if server has a URL)
+// 3. Local stdio (spawn process)
 func Connect(ctx context.Context, server *config.Server, headers map[string]string, options ConnectOptions) (Session, error) {
 	if server != nil && server.URL != "" {
 		return ConnectHTTP(ctx, server, headers, options)
+	}
+	// Check for running daemon
+	if options.DaemonCheck != nil && server != nil && server.Name != "" && server.Name != "(direct)" {
+		if httpClient, url, running := options.DaemonCheck(server.Name); running {
+			c := &HTTPClient{client: httpClient, url: url, headers: copyHeaders(headers)}
+			// Daemon is already initialized — skip handshake
+			return c, nil
+		}
 	}
 	return ConnectStdio(ctx, server, options)
 }

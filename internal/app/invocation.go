@@ -61,7 +61,7 @@ func RewriteArgsForExposedMode(inv Invocation, args []string) []string {
 // interpreted as a meta-command rather than a tool shorthand.
 func IsReservedExposedCommand(name string) bool {
 	switch name {
-	case "help", "completion", "version", "login", "tools", "tool", "resources", "resource", "prompts", "prompt", "shell", "doctor":
+	case "help", "completion", "version", "login", "tools", "tool", "resources", "resource", "prompts", "prompt", "shell", "doctor", "up", "down":
 		return true
 	default:
 		return false
@@ -73,7 +73,7 @@ func IsKnownRootCommand(name string) bool {
 	switch name {
 	case "help", "completion", "version", "add", "ls", "rm", "expose", "unexpose",
 		"login", "tools", "tool", "resources", "resource", "prompts", "prompt",
-		"shell", "doctor":
+		"shell", "doctor", "up", "down", "__daemon":
 		return true
 	default:
 		return false
