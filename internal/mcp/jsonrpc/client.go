@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 	"sync"
 	"sync/atomic"
 )
@@ -45,7 +46,7 @@ type Client struct {
 	nextID         int64
 	writeMu        sync.Mutex
 	mu             sync.Mutex
-	pending        map[int64]chan envelope
+	pendingStr     map[string]chan envelope
 	done           chan struct{}
 	readErr        error
 }
@@ -53,11 +54,11 @@ type Client struct {
 // NewClient constructs a JSON-RPC client and starts its read loop.
 func NewClient(reader io.Reader, writer io.Writer, closer io.Closer, requestHandler RequestHandler) *Client {
 	client := &Client{
-		reader:         bufio.NewReader(reader),
+		reader:         bufio.NewReaderSize(reader, 256*1024),
 		writer:         writer,
 		closer:         closer,
 		requestHandler: requestHandler,
-		pending:        map[int64]chan envelope{},
+		pendingStr:     map[string]chan envelope{},
 		done:           make(chan struct{}),
 	}
 	go client.readLoop()
@@ -68,9 +69,10 @@ func NewClient(reader io.Reader, writer io.Writer, closer io.Closer, requestHand
 func (c *Client) Call(ctx context.Context, method string, params any, result any) error {
 	id := atomic.AddInt64(&c.nextID, 1)
 	responseCh := make(chan envelope, 1)
+	idStr := fmt.Sprintf("%d", id)
 
 	c.mu.Lock()
-	c.pending[id] = responseCh
+	c.pendingStr[idStr] = responseCh
 	c.mu.Unlock()
 
 	request := map[string]any{
@@ -84,7 +86,7 @@ func (c *Client) Call(ctx context.Context, method string, params any, result any
 
 	payload, err := json.Marshal(request)
 	if err != nil {
-		c.removePending(id)
+		c.removePending(idStr)
 		return fmt.Errorf("marshal request %s: %w", method, err)
 	}
 
@@ -92,7 +94,7 @@ func (c *Client) Call(ctx context.Context, method string, params any, result any
 	err = writeMessage(c.writer, payload)
 	c.writeMu.Unlock()
 	if err != nil {
-		c.removePending(id)
+		c.removePending(idStr)
 		return fmt.Errorf("write request %s: %w", method, err)
 	}
 
@@ -109,10 +111,10 @@ func (c *Client) Call(ctx context.Context, method string, params any, result any
 		}
 		return nil
 	case <-ctx.Done():
-		c.removePending(id)
+		c.removePending(idStr)
 		return ctx.Err()
 	case <-c.done:
-		c.removePending(id)
+		c.removePending(idStr)
 		if c.readErr != nil {
 			return c.readErr
 		}
@@ -168,23 +170,23 @@ func (c *Client) readLoop() {
 			c.failPending(fmt.Errorf("decode json-rpc message: %w", err))
 			return
 		}
+		// Server-initiated request (has method + id)
 		if response.Method != "" && len(response.ID) > 0 {
 			go c.handleIncomingRequest(response)
 			continue
 		}
+		// Notification (has method but no id) — skip
 		if len(response.ID) == 0 {
 			continue
 		}
 
-		var id int64
-		if err := json.Unmarshal(response.ID, &id); err != nil {
-			c.failPending(fmt.Errorf("decode json-rpc id: %w", err))
-			return
-		}
+		// Response to one of our requests — match by string-normalized ID
+		idStr := strings.TrimSpace(string(response.ID))
+		idStr = strings.Trim(idStr, `"`) // handle servers that return id as string
 
 		c.mu.Lock()
-		ch := c.pending[id]
-		delete(c.pending, id)
+		ch := c.pendingStr[idStr]
+		delete(c.pendingStr, idStr)
 		c.mu.Unlock()
 		if ch != nil {
 			ch <- response
@@ -197,15 +199,15 @@ func (c *Client) failPending(err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.readErr = err
-	for id := range c.pending {
-		delete(c.pending, id)
+	for id := range c.pendingStr {
+		delete(c.pendingStr, id)
 	}
 }
 
-func (c *Client) removePending(id int64) {
+func (c *Client) removePending(idStr string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	delete(c.pending, id)
+	delete(c.pendingStr, idStr)
 }
 
 func (c *Client) handleIncomingRequest(request envelope) {
