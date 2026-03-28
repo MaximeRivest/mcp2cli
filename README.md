@@ -333,13 +333,13 @@ This is an alpha release. What works today:
 - ✅ exposed standalone commands (`mcp-time`, `t`)
 - ✅ interactive shell mode with history and completion
 - ✅ terminal elicitation (server-initiated user prompts)
+- ✅ Streamable HTTP (SSE) transport
 - ✅ metadata cache for fast completions
 - ✅ `doctor` diagnostics
 
 Still coming:
 
 - ⬜ sampling (LLM-backed server requests)
-- ⬜ SSE / streamable HTTP transport compatibility
 
 ---
 
