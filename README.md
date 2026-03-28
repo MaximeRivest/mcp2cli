@@ -52,7 +52,7 @@ Two steps: **add** a server once, then **use** it by name.
 ### Step 1: Add a server
 
 ```bash
-mcp2cli add weather 'npx -y @h1deya/mcp-server-weather'
+mcp2cli add time 'uvx mcp-server-time'
 ```
 
 That's it. The second argument is the command to start the server. URLs are detected automatically:
@@ -64,16 +64,16 @@ mcp2cli add notion https://mcp.notion.com/mcp --auth oauth
 ### Step 2: Use it
 
 ```bash
-mcp2cli weather tools
+mcp2cli time tools
 ```
 
 ```text
-get-alerts      Get active weather alerts for a US state
-get-forecast    Get forecast for a latitude/longitude pair
+convert-time      Convert time between timezones
+get-current-time  Get current time in a specific timezone
 ```
 
 ```bash
-mcp2cli weather get-forecast --latitude 37.7 --longitude -122.4
+mcp2cli time get-current-time --timezone 'America/New_York'
 ```
 
 The server name **is** the command. No `tool` vs `tools` to remember — just the server name followed by what you want to do.
@@ -85,49 +85,54 @@ The server name **is** the command. No `tool` vs `tools` to remember — just th
 Once a server is added, here's everything you need:
 
 ```bash
-mcp2cli weather tools                                          # list tools
-mcp2cli weather get-forecast --latitude 37.7 --longitude -122.4  # call a tool
-mcp2cli weather get-forecast 37.7 -122.4                       # positional args work too
-mcp2cli weather resources                                      # list resources
-mcp2cli weather resource api-docs                              # read a resource
-mcp2cli weather prompts                                        # list prompts
-mcp2cli weather prompt review-code --code @main.go             # render a prompt
-mcp2cli weather shell                                          # interactive mode
-mcp2cli weather doctor                                         # diagnose problems
+mcp2cli time tools                                              # list tools
+mcp2cli time get-current-time --timezone 'America/New_York'      # call a tool
+mcp2cli time get-current-time 'Europe/London'                    # positional args work too
+mcp2cli time resources                                          # list resources
+mcp2cli time prompts                                            # list prompts
+mcp2cli time shell                                              # interactive mode
+mcp2cli time doctor                                             # diagnose problems
 ```
 
 ### Inspect a tool before calling it
 
 ```bash
-mcp2cli weather tools get-forecast
+mcp2cli time tools get-current-time
 ```
 
 ```text
 NAME
-  get-forecast - Get weather forecast for a location
+  get-current-time - Get current time in a specific timezone
 
 USAGE
-  mcp2cli weather get-forecast --latitude <float> --longitude <float>
+  time get-current-time --timezone <string>
 
 ARGS
-  --latitude float   Required. Latitude of the location.
-  --longitude float  Required. Longitude of the location.
+  --timezone string  Required. IANA timezone name (e.g., 'America/New_York', 'Europe/London').
+```
+
+### Keep the server running for instant responses
+
+```bash
+mcp2cli time up                                        # start in background
+mcp2cli time get-current-time 'America/New_York'        # ~10ms instead of ~2s
+mcp2cli time get-current-time 'Europe/London'            # instant
+mcp2cli time down                                       # stop when done
 ```
 
 ### Interactive shell
 
 ```bash
-mcp2cli weather shell
+mcp2cli time shell
 ```
 
 ```text
-weather> tools
-weather> get-forecast 37.7 -122.4
-weather> resources
-weather> resource api-docs
-weather> set output json
-weather> get-forecast 37.7 -122.4
-weather> exit
+time> tools
+time> get-current-time 'America/New_York'
+time> convert-time --source-timezone 'America/New_York' --time '14:30' --target-timezone 'Europe/London'
+time> set output json
+time> get-current-time 'Europe/London'
+time> exit
 ```
 
 The shell keeps the connection open, supports history and tab completion, and lets you switch output formats on the fly.
@@ -158,10 +163,9 @@ mcp2cli notion tools
 ## Output formats
 
 ```bash
-mcp2cli weather get-forecast 37.7 -122.4           # human-readable (default)
-mcp2cli weather get-forecast 37.7 -122.4 -o json    # exact JSON for scripts
-mcp2cli weather get-forecast 37.7 -122.4 -o yaml    # YAML
-mcp2cli weather resource api-docs -o raw             # plain text
+mcp2cli time get-current-time 'America/New_York'            # human-readable (default)
+mcp2cli time get-current-time 'America/New_York' -o json     # exact JSON for scripts
+mcp2cli time get-current-time 'America/New_York' -o yaml     # YAML
 ```
 
 `-o json` is always script-safe: output goes to `stdout`, diagnostics go to `stderr`, exit codes are stable.
@@ -174,10 +178,10 @@ mcp2cli weather resource api-docs -o raw             # plain text
 
 ```bash
 # Named flags (always work)
-mcp2cli weather get-forecast --latitude 37.7 --longitude -122.4
+mcp2cli time get-current-time --timezone 'America/New_York'
 
 # Positional arguments (for required scalar args, in schema order)
-mcp2cli weather get-forecast 37.7 -122.4
+mcp2cli time get-current-time 'America/New_York'
 
 # Booleans
 mcp2cli api update --dry-run
@@ -206,8 +210,8 @@ mcp2cli api complex-tool --input '{"nested": {"key": "value"}}'
 You don't have to register a server to use it:
 
 ```bash
-mcp2cli tools --command 'npx -y @h1deya/mcp-server-weather'
-mcp2cli tool --command 'npx -y @h1deya/mcp-server-weather' get-forecast 37.7 -122.4
+mcp2cli tools --command 'uvx mcp-server-time'
+mcp2cli tool --command 'uvx mcp-server-time' get-current-time 'America/New_York'
 mcp2cli tool --url https://api.example.com/mcp --bearer-env TOKEN search --query test
 ```
 
@@ -218,19 +222,19 @@ mcp2cli tool --url https://api.example.com/mcp --bearer-env TOKEN search --query
 When you add a server, `mcp2cli` automatically creates a standalone command for it:
 
 ```bash
-mcp2cli add weather 'npx -y @h1deya/mcp-server-weather'
-# → creates mcp-weather
+mcp2cli add time 'uvx mcp-server-time'
+# → creates mcp-time
 
-mcp-weather tools
-mcp-weather get-forecast 37.7 -122.4
+mcp-time tools
+mcp-time get-current-time 'America/New_York'
 ```
 
 Want a shorter name?
 
 ```bash
-mcp2cli expose weather --as wea
-wea tools
-wea get-forecast 37.7 -122.4
+mcp2cli expose time --as t
+t tools
+t get-current-time 'America/New_York'
 ```
 
 These are real commands on your `PATH`, so `mcp-<TAB>` works in your shell.
@@ -240,16 +244,16 @@ These are real commands on your `PATH`, so `mcp-<TAB>` works in your shell.
 ## Managing servers
 
 ```bash
-mcp2cli add weather 'npx -y @h1deya/mcp-server-weather'    # register
-mcp2cli ls                                                   # list all
-mcp2cli rm weather                                           # remove (cleans up exposed commands too)
+mcp2cli add time 'uvx mcp-server-time'    # register
+mcp2cli ls                                 # list all
+mcp2cli rm time                            # remove (cleans up exposed commands too)
 ```
 
 `ls` output:
 
 ```text
-weather  npx -y @h1deya/mcp-server-weather
-notion   https://mcp.notion.com/mcp
+time (up)  uvx mcp-server-time
+notion     https://mcp.notion.com/mcp
 ```
 
 Config is saved automatically:
@@ -262,13 +266,13 @@ Config is saved automatically:
 ## Diagnosing problems
 
 ```bash
-mcp2cli weather doctor
+mcp2cli time doctor
 ```
 
 ```text
 CHECK    STATUS  DETAIL
-resolve  ok      weather
-command  ok      /usr/local/bin/npx
+resolve  ok      time
+command  ok      /home/maxime/.local/bin/uvx
 auth     ok      no auth required
 connect  ok      initialize handshake succeeded
 tools    ok      2 tool(s) available
@@ -324,8 +328,9 @@ This is an alpha release. What works today:
 - ✅ OAuth login with browser flow and token persistence
 - ✅ tools, resources, and prompts
 - ✅ schema-driven CLI flags and positional arguments
-- ✅ server name as implicit subcommand (`mcp2cli weather tools`)
-- ✅ exposed standalone commands (`mcp-weather`, `wea`)
+- ✅ server name as implicit subcommand (`mcp2cli time tools`)
+- ✅ background daemon for instant responses (`mcp2cli time up`)
+- ✅ exposed standalone commands (`mcp-time`, `t`)
 - ✅ interactive shell mode with history and completion
 - ✅ terminal elicitation (server-initiated user prompts)
 - ✅ metadata cache for fast completions
