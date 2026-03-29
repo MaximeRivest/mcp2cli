@@ -15,7 +15,7 @@ export default defineConfig({
         },
       ],
       sidebar: [
-        { label: "Overview", slug: "overview" },
+        { label: "Overview", slug: "" },
         { label: "Installation", slug: "installation" },
         { label: "Quick Start", slug: "quick-start" },
         {
