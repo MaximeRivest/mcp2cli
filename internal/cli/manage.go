@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/tabwriter"
 
@@ -12,6 +13,24 @@ import (
 	"github.com/maximerivest/mcptocli/internal/expose"
 	"github.com/spf13/cobra"
 )
+
+// isOnPath checks whether a directory is in the current PATH.
+func isOnPath(dir string) bool {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return false
+	}
+	for _, p := range filepath.SplitList(os.Getenv("PATH")) {
+		pAbs, err := filepath.Abs(p)
+		if err != nil {
+			continue
+		}
+		if pAbs == abs {
+			return true
+		}
+	}
+	return false
+}
 
 func newAddCommand(state *State) *cobra.Command {
 	var (
@@ -106,6 +125,9 @@ URLs (starting with http:// or https://) are detected automatically.`,
 					shimPath, err := expose.Create(repo.Paths.ExposeBinDir, exposedName, executable)
 					if err == nil {
 						fmt.Fprintf(cmd.OutOrStdout(), "exposed as %q (%s)\n", exposedName, shimPath)
+						if !isOnPath(repo.Paths.ExposeBinDir) {
+							fmt.Fprintf(cmd.ErrOrStderr(), "\nhint: add %s to your PATH to use %q directly\n", repo.Paths.ExposeBinDir, exposedName)
+						}
 					}
 				}
 			}

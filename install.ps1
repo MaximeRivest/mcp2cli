@@ -21,6 +21,18 @@ if ($currentPath -notlike "*$installDir*") {
     Write-Host "Added $installDir to PATH"
 }
 
+# ── expose bin dir on PATH ───────────────────────────────────────────────────
+
+$exposeBinDir = "$env:LOCALAPPDATA\mcptocli\bin"
+New-Item -ItemType Directory -Force -Path $exposeBinDir | Out-Null
+
+$currentPath2 = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($currentPath2 -notlike "*$exposeBinDir*") {
+    [Environment]::SetEnvironmentVariable("Path", "$currentPath2;$exposeBinDir", "User")
+    $env:PATH += ";$exposeBinDir"
+    Write-Host "Added $exposeBinDir to PATH (exposed commands like mcp-time)"
+}
+
 # ── verify ───────────────────────────────────────────────────────────────────
 
 $version = & $binary version 2>$null | Select-Object -First 1

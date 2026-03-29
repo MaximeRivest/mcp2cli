@@ -85,6 +85,37 @@ setup_completions() {
 
 setup_completions
 
+# ── expose bin dir on PATH ───────────────────────────────────────────────────
+
+EXPOSE_BIN_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/mcptocli/bin"
+mkdir -p "$EXPOSE_BIN_DIR"
+
+setup_expose_path() {
+  case "$SHELL_NAME" in
+    bash) RC="$HOME/.bashrc" ;;
+    zsh)  RC="$HOME/.zshrc" ;;
+    fish) RC="$HOME/.config/fish/config.fish" ;;
+    *)    return ;;
+  esac
+
+  if [ "$SHELL_NAME" = "fish" ]; then
+    LINE="fish_add_path $EXPOSE_BIN_DIR"
+  else
+    LINE="export PATH=\"$EXPOSE_BIN_DIR:\$PATH\""
+  fi
+
+  if [ -f "$RC" ] && grep -qF "$EXPOSE_BIN_DIR" "$RC" 2>/dev/null; then
+    return
+  fi
+
+  echo "" >> "$RC"
+  echo "# mcptocli exposed commands (mcp-time, mcp-notion, etc.)" >> "$RC"
+  echo "$LINE" >> "$RC"
+  echo "Exposed commands directory added to PATH in ${RC}"
+}
+
+setup_expose_path
+
 # ── short alias ──────────────────────────────────────────────────────────────
 
 setup_alias() {
