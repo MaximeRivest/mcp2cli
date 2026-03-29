@@ -557,21 +557,48 @@ func renderTool(w io.Writer, tool types.Tool, spec *inspect.ToolSpec, usagePrefi
 		_, err := w.Write(append(spec.RawSchema, '\n'))
 		return err
 	case "table", "auto":
+		// NAME — short summary
+		summary := shortSummary(view.Description)
 		fmt.Fprintf(w, "NAME\n  %s", view.Name)
-		if view.Description != "" {
-			fmt.Fprintf(w, " - %s", cleanDescription(view.Description))
+		if summary != "" {
+			fmt.Fprintf(w, " — %s", summary)
 		}
 		fmt.Fprintln(w)
+
+		// DESCRIPTION — full text, cleaned up
+		desc, examples := parseExamples(view.Description)
+		desc = cleanDescriptionFull(desc)
+		if desc != "" {
+			fmt.Fprintf(w, "\nDESCRIPTION\n%s\n", indentBlock(desc, "  "))
+		}
+
+		// USAGE
 		if len(spec.Arguments) > 0 {
 			fmt.Fprintf(w, "\nUSAGE\n  %s %s", usagePrefix, view.Name)
 			for _, part := range spec.UsageParts() {
 				fmt.Fprintf(w, " %s", part)
 			}
 			fmt.Fprintln(w)
-			fmt.Fprintln(w, "\nARGS")
+		}
+
+		// EXAMPLES — rendered as CLI invocations
+		if len(examples) > 0 {
+			fmt.Fprintln(w, "\nEXAMPLES")
+			for _, ex := range examples {
+				if ex.Description != "" {
+					fmt.Fprintf(w, "  # %s\n", ex.Description)
+				}
+				cliExample := jsonToFlags(usagePrefix+" "+view.Name, ex.JSON, spec)
+				fmt.Fprintf(w, "  %s\n\n", cliExample)
+			}
+		}
+
+		// ARGS
+		if len(spec.Arguments) > 0 {
+			fmt.Fprintln(w, "ARGS")
 			writer := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
 			for _, arg := range view.Args {
-				details := cleanArgDescription(arg.Description)
+				details := cleanArgForDisplay(arg.Description)
 				if arg.Required {
 					details = "Required. " + details
 				}
@@ -838,61 +865,183 @@ type toolArgView struct {
 	Default     any    `json:"default,omitempty" yaml:"default,omitempty"`
 }
 
-// cleanDescription extracts a short, terminal-friendly summary from a tool description.
-// Strips XML/HTML tags, markdown headings, and keeps only the first paragraph.
-func cleanDescription(s string) string {
-	// Strip XML/HTML tags
+// shortSummary returns the first meaningful sentence for the NAME line.
+func shortSummary(s string) string {
 	s = stripTags(s)
-	// Take first paragraph (up to double newline)
-	if idx := strings.Index(s, "\n\n"); idx > 0 {
-		s = s[:idx]
-	}
-	// Clean up markdown headings
-	lines := strings.Split(s, "\n")
-	var clean []string
-	for _, line := range lines {
+	for _, line := range strings.Split(s, "\n") {
 		line = strings.TrimSpace(line)
-		if line == "" {
+		if line == "" || strings.HasPrefix(line, "#") {
 			continue
 		}
-		// Skip markdown headings
-		if strings.HasPrefix(line, "#") {
-			continue
+		// Cut at first sentence end after 30 chars, or cap at 100
+		if len(line) > 100 {
+			for i, r := range line {
+				if i > 30 && (r == '.' || r == '。') {
+					return line[:i+1]
+				}
+			}
+			return line[:97] + "..."
 		}
-		clean = append(clean, line)
+		return line
 	}
-	result := strings.Join(clean, " ")
-	// Truncate if still too long
-	if len(result) > 200 {
-		// Cut at sentence boundary
-		for i, r := range result {
-			if i > 100 && (r == '.' || r == '。') {
-				return result[:i+1]
+	return ""
+}
+
+// example holds a parsed <example> from a tool description.
+type example struct {
+	Description string
+	JSON        string
+}
+
+// parseExamples extracts <example> blocks from a description and returns
+// the cleaned description and the parsed examples.
+func parseExamples(s string) (description string, examples []example) {
+	// Match <example description="...">...</example> or <example>...</example>
+	remaining := s
+	for {
+		start := strings.Index(remaining, "<example")
+		if start < 0 {
+			break
+		}
+		end := strings.Index(remaining[start:], "</example>")
+		if end < 0 {
+			break
+		}
+		end += start + len("</example>")
+
+		tag := remaining[start:end]
+		// Extract description attribute
+		desc := ""
+		if dIdx := strings.Index(tag, `description="`); dIdx >= 0 {
+			dStart := dIdx + len(`description="`)
+			dEnd := strings.Index(tag[dStart:], `"`)
+			if dEnd >= 0 {
+				desc = tag[dStart : dStart+dEnd]
 			}
 		}
-		return result[:197] + "..."
+		// Extract JSON body (between > and </example>)
+		bodyStart := strings.Index(tag, ">") + 1
+		bodyEnd := strings.Index(tag, "</example>")
+		body := ""
+		if bodyStart > 0 && bodyEnd > bodyStart {
+			body = strings.TrimSpace(tag[bodyStart:bodyEnd])
+		}
+		if body != "" {
+			examples = append(examples, example{Description: desc, JSON: body})
+		}
+
+		remaining = remaining[:start] + remaining[end:]
 	}
+	return remaining, examples
+}
+
+// jsonToFlags converts a JSON example into a CLI flag invocation string.
+func jsonToFlags(prefix, jsonStr string, spec *inspect.ToolSpec) string {
+	// Try to parse as JSON object
+	var obj map[string]any
+	if err := json.Unmarshal([]byte(jsonStr), &obj); err != nil {
+		// Not a simple object — show as raw --input
+		compact := strings.Join(strings.Fields(jsonStr), " ")
+		return prefix + " --input '" + compact + "'"
+	}
+
+	var parts []string
+	parts = append(parts, prefix)
+	for key, value := range obj {
+		flagName := naming.ToKebabCase(key)
+		switch v := value.(type) {
+		case string:
+			parts = append(parts, fmt.Sprintf("--%s '%s'", flagName, v))
+		case float64:
+			if v == float64(int64(v)) {
+				parts = append(parts, fmt.Sprintf("--%s %d", flagName, int64(v)))
+			} else {
+				parts = append(parts, fmt.Sprintf("--%s %g", flagName, v))
+			}
+		case bool:
+			if v {
+				parts = append(parts, fmt.Sprintf("--%s", flagName))
+			} else {
+				parts = append(parts, fmt.Sprintf("--no-%s", flagName))
+			}
+		default:
+			// Complex value — serialize as JSON
+			b, _ := json.Marshal(v)
+			parts = append(parts, fmt.Sprintf("--%s '%s'", flagName, string(b)))
+		}
+	}
+
+	result := strings.Join(parts, " \\\n    ")
 	return result
 }
 
-// cleanArgDescription returns a short description for a CLI flag.
-func cleanArgDescription(s string) string {
+// cleanDescriptionFull cleans a full description for terminal display.
+// Strips XML tags, cleans markdown, and normalizes whitespace.
+func cleanDescriptionFull(s string) string {
 	s = stripTags(s)
-	// Take first sentence or first line
+	lines := strings.Split(s, "\n")
+	var out []string
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		// Convert markdown headings to uppercase labels
+		if strings.HasPrefix(trimmed, "## ") {
+			heading := strings.TrimPrefix(trimmed, "## ")
+			heading = strings.TrimPrefix(heading, "#")
+			out = append(out, "", strings.ToUpper(strings.TrimSpace(heading)))
+			continue
+		}
+		if strings.HasPrefix(trimmed, "# ") {
+			heading := strings.TrimPrefix(trimmed, "# ")
+			out = append(out, "", strings.ToUpper(strings.TrimSpace(heading)))
+			continue
+		}
+		// Strip bold markdown
+		trimmed = strings.ReplaceAll(trimmed, "**", "")
+		out = append(out, trimmed)
+	}
+
+	// Collapse multiple blank lines
+	var final []string
+	prevEmpty := false
+	for _, line := range out {
+		empty := line == ""
+		if empty && prevEmpty {
+			continue
+		}
+		final = append(final, line)
+		prevEmpty = empty
+	}
+
+	// Trim leading/trailing blank lines
+	for len(final) > 0 && final[0] == "" {
+		final = final[1:]
+	}
+	for len(final) > 0 && final[len(final)-1] == "" {
+		final = final[:len(final)-1]
+	}
+	return strings.Join(final, "\n")
+}
+
+// cleanArgForDisplay cleans an argument description: strips tags, wraps at first line.
+func cleanArgForDisplay(s string) string {
+	s = stripTags(s)
 	s = strings.TrimSpace(s)
+	// Take first line only for tabwriter alignment
 	if idx := strings.Index(s, "\n"); idx > 0 {
 		s = s[:idx]
 	}
-	s = strings.TrimSpace(s)
-	if len(s) > 120 {
-		for i, r := range s {
-			if i > 40 && (r == '.' || r == '。') {
-				return s[:i+1]
-			}
+	return strings.TrimSpace(s)
+}
+
+// indentBlock adds a prefix to each line.
+func indentBlock(s, prefix string) string {
+	lines := strings.Split(s, "\n")
+	for i, line := range lines {
+		if line != "" {
+			lines[i] = prefix + line
 		}
-		return s[:117] + "..."
 	}
-	return s
+	return strings.Join(lines, "\n")
 }
 
 // stripTags removes XML/HTML tags from a string.
