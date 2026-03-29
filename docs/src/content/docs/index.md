@@ -9,17 +9,46 @@ template: splash
   <p class="landing-tagline">Turn any MCP server into a command-line tool.</p>
 </div>
 
-If a service has an MCP server, `mcp2cli` lets you use it from your terminal — no SDK, no boilerplate, just commands.
-
 ```bash
+# add a server once
 mcp add time 'uvx mcp-server-time'
+
+# use it like any command
 mcp time get-current-time --timezone America/New_York
 ```
 
-## What you get
+```bash
+# discover what's available
+mcp time tools
+```
 
-- **Add once, use forever** — save a server by name, call its tools like shell commands
-- **Everything auto-generated** — flags, help text, and tab completion come from the server's schema
-- **Works everywhere** — local servers, remote APIs, OAuth, bearer tokens
-- **Fast when you need it** — keep a server running in the background with `mcp time up`
-- **Share across clients** — one server, multiple terminals, Claude Desktop, notebooks (`mcp time up --share`)
+```text
+Tools (2):
+
+  convert-time      Convert time between timezones.
+  get-current-time  Get current time in a specific timezone.
+```
+
+```bash
+# inspect a tool — flags are generated from the schema
+mcp time tools get-current-time
+```
+
+```text
+NAME
+  get-current-time - Get current time in a specific timezone
+
+USAGE
+  mcp time get-current-time --timezone <string>
+
+ARGS
+  --timezone string  Required. IANA timezone name.
+```
+
+```bash
+# keep it running for instant responses
+mcp time up
+
+# share one server across terminals, Claude Desktop, notebooks
+mcp time up --share
+```
