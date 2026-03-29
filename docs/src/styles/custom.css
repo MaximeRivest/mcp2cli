@@ -6,16 +6,15 @@
 /* ── Starlight theme tokens ────────────────────────────────────── */
 
 :root {
-  /* Typography */
   --sl-font: 'Inter', system-ui, sans-serif;
   --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* Accent — teal/emerald, our CLI identity */
+  /* Teal accent */
   --sl-color-accent-low: #0d3d38;
   --sl-color-accent: #0d9488;
   --sl-color-accent-high: #ccfbf1;
 
-  /* Warm paper background */
+  /* Warm paper */
   --sl-color-bg: #fafaf9;
   --sl-color-bg-nav: rgba(255, 255, 255, 0.85);
   --sl-color-bg-sidebar: #fafaf9;
@@ -35,7 +34,7 @@
   --sl-color-hairline: #44403c;
 }
 
-/* ── Global feel ───────────────────────────────────────────────── */
+/* ── Global ────────────────────────────────────────────────────── */
 
 html {
   scroll-behavior: smooth;
@@ -47,14 +46,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Navigation bar ────────────────────────────────────────────── */
+/* ── Header bar ────────────────────────────────────────────────── */
 
 header.header {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Site title in header — bold and clean */
 .site-title {
   font-weight: 700 !important;
   letter-spacing: -0.02em;
@@ -71,7 +69,32 @@ nav.sidebar a[aria-current='page'] {
   font-weight: 600;
 }
 
-/* ── Content typography ────────────────────────────────────────── */
+/* ── Landing page hero ─────────────────────────────────────────── */
+
+.landing {
+  margin: 0 0 1rem 0;
+  padding: 0;
+}
+
+.landing-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin: 0;
+  color: var(--sl-color-white);
+}
+
+.landing-tagline {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--sl-color-gray-2);
+  margin: 0.75rem 0 0 0;
+  letter-spacing: -0.01em;
+}
+
+/* ── Content headings ──────────────────────────────────────────── */
 
 .sl-markdown-content h1 {
   font-weight: 800;
@@ -91,14 +114,10 @@ nav.sidebar a[aria-current='page'] {
 .sl-markdown-content h3 {
   font-weight: 600;
   letter-spacing: -0.01em;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 
-/* Tighter paragraph spacing */
-.sl-markdown-content p {
-  line-height: 1.7;
-}
-
+.sl-markdown-content p,
 .sl-markdown-content li {
   line-height: 1.7;
 }
@@ -119,35 +138,31 @@ nav.sidebar a[aria-current='page'] {
   border-color: #292524;
 }
 
-/* ── Code blocks ───────────────────────────────────────────────── */
+/* ── Code blocks — kill the ugly dot header ────────────────────── */
 
-.sl-markdown-content pre {
-  border-radius: 8px;
-  border: 1px solid var(--sl-color-hairline-light);
+/* Hide the macOS-style window frame dots */
+.expressive-code .frame .header {
+  display: none !important;
 }
 
-/* ── Landing page hero style (for index.md) ────────────────────── */
-
-.landing-hero {
-  font-size: 4rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  color: var(--sl-color-white);
-  margin: 0 0 0.5rem 0;
+/* Clean code block look */
+.expressive-code .frame {
+  border-radius: 8px !important;
+  border: 1px solid var(--sl-color-hairline-light) !important;
+  box-shadow: none !important;
 }
 
-@media (min-width: 1024px) {
-  .landing-hero {
-    font-size: 5.5rem;
-  }
+.expressive-code pre {
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 1rem 1.25rem !important;
+  font-size: 0.875rem !important;
+  line-height: 1.65 !important;
 }
 
-.landing-subtitle {
-  font-size: 1.15rem;
-  font-weight: 400;
-  color: var(--sl-color-gray-3);
-  margin: 0 0 2rem 0;
+/* Remove any top margin from code when header is hidden */
+.expressive-code .frame:not(:has(.header:not([style*='display: none']))) pre {
+  margin-top: 0;
 }
 
 /* ── Tables ────────────────────────────────────────────────────── */
@@ -165,14 +180,20 @@ nav.sidebar a[aria-current='page'] {
   letter-spacing: 0.05em;
 }
 
-/* ── Starlight admonitions — teal tint ─────────────────────────── */
+/* ── Admonitions ───────────────────────────────────────────────── */
 
 .starlight-aside--tip {
   border-color: var(--sl-color-accent);
 }
 
-/* ── Right sidebar (TOC) ──────────────────────────────────────── */
+/* ── TOC ───────────────────────────────────────────────────────── */
 
 starlight-toc a {
   font-size: 0.8rem;
+}
+
+/* ── Splash page: hide the auto-generated h1 ──────────────────── */
+
+[data-has-hero] .content-panel:first-child h1 {
+  display: none;
 }

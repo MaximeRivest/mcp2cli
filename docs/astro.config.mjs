@@ -8,6 +8,16 @@ export default defineConfig({
     starlight({
       title: "mcp2cli",
       customCss: ["./src/styles/custom.css"],
+      expressiveCode: {
+        styleOverrides: {
+          borderRadius: "8px",
+          frames: { showCopyToClipboardButton: true },
+        },
+        frames: {
+          showCopyToClipboardButton: true,
+          removeCommentsWhenCopyingTerminalFrames: true,
+        },
+      },
       social: [
         {
           icon: "github",
@@ -16,7 +26,7 @@ export default defineConfig({
         },
       ],
       sidebar: [
-        { label: "Overview", slug: "" },
+        { label: "Overview", link: "/" },
         { label: "Installation", slug: "installation" },
         { label: "Quick Start", slug: "quick-start" },
         {
