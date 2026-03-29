@@ -138,31 +138,28 @@ nav.sidebar a[aria-current='page'] {
   border-color: #292524;
 }
 
-/* ── Code blocks — kill the ugly dot header ────────────────────── */
+/* ── Code blocks — clean, no dots ──────────────────────────────── */
 
-/* Hide the macOS-style window frame dots */
-.expressive-code .frame .header {
+/* Hide ALL code block headers (terminal dots, file names) */
+.expressive-code figcaption.header {
   display: none !important;
 }
 
-/* Clean code block look */
-.expressive-code .frame {
+/* Clean code block container */
+.expressive-code figure.frame {
   border-radius: 8px !important;
   border: 1px solid var(--sl-color-hairline-light) !important;
   box-shadow: none !important;
+  overflow: hidden;
 }
 
 .expressive-code pre {
   border: none !important;
-  border-radius: 8px !important;
+  border-radius: 0 !important;
   padding: 1rem 1.25rem !important;
   font-size: 0.875rem !important;
   line-height: 1.65 !important;
-}
-
-/* Remove any top margin from code when header is hidden */
-.expressive-code .frame:not(:has(.header:not([style*='display: none']))) pre {
-  margin-top: 0;
+  margin: 0 !important;
 }
 
 /* ── Tables ────────────────────────────────────────────────────── */
@@ -192,8 +189,21 @@ starlight-toc a {
   font-size: 0.8rem;
 }
 
-/* ── Splash page: hide the auto-generated h1 ──────────────────── */
+/* ── Landing page: hide Starlight's auto-generated h1 ─────────── */
 
-[data-has-hero] .content-panel:first-child h1 {
+/* The page with our custom .landing div doesn't need Starlight's title */
+.sl-markdown-content:has(.landing) {
+  & > h1:first-child {
+    display: none;
+  }
+}
+
+/* Also hide the content-panel title wrapper on the landing page */
+.content-panel:has(+ .content-panel .landing) h1 {
+  display: none;
+}
+
+/* Hide the entire first content-panel (title bar) when landing is present */
+main:has(.landing) > .content-panel:first-child {
   display: none;
 }

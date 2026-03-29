@@ -11,10 +11,10 @@ export default defineConfig({
       expressiveCode: {
         styleOverrides: {
           borderRadius: "8px",
-          frames: { showCopyToClipboardButton: true },
         },
         frames: {
           showCopyToClipboardButton: true,
+          extractFileNameFromCode: false,
           removeCommentsWhenCopyingTerminalFrames: true,
         },
       },
