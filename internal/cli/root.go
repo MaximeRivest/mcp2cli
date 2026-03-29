@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/maximerivest/mcptocli/internal/cache"
 	"github.com/maximerivest/mcptocli/internal/naming"
@@ -164,6 +165,26 @@ func loadExposedMetadata(state *State) *cache.Metadata {
 	return metadata
 }
 
+// firstLine returns the first non-empty, non-heading line, truncated to ~80 chars.
+func firstLine(s string) string {
+	for _, line := range strings.Split(s, "\n") {
+		line = strings.TrimSpace(line)
+		if line != "" && !strings.HasPrefix(line, "#") {
+			// Truncate at first sentence end if long
+			if len(line) > 80 {
+				for i, r := range line {
+					if i > 30 && (r == '.' || r == '。') {
+						return line[:i+1]
+					}
+				}
+				return line[:77] + "..."
+			}
+			return line
+		}
+	}
+	return strings.TrimSpace(s)
+}
+
 // addCachedToolCommands adds cached tools as top-level subcommands for exposed commands.
 // Each tool appears in the help listing. Actual invocation and --help display are
 // handled by the "tool" command (which renders schema-based help for exposed commands).
@@ -175,7 +196,7 @@ func addCachedToolCommands(state *State, root *cobra.Command) {
 	for _, t := range metadata.Tools {
 		toolName := naming.ToKebabCase(t.Name)
 		originalName := t.Name
-		desc := t.Description
+		desc := firstLine(t.Description)
 		if desc == "" {
 			desc = "(no description)"
 		}
