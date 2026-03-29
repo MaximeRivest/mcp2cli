@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 
+	"github.com/inconshreveable/mousetrap"
 	"github.com/maximerivest/mcp2cli/internal/app"
 	"github.com/maximerivest/mcp2cli/internal/cli"
 	"github.com/maximerivest/mcp2cli/internal/config"
@@ -17,7 +19,13 @@ var (
 )
 
 func main() {
-	os.Exit(run())
+	code := run()
+	if mousetrap.StartedByExplorer() {
+		fmt.Println()
+		fmt.Println("Press Enter to exit...")
+		bufio.NewReader(os.Stdin).ReadBytes('\n')
+	}
+	os.Exit(code)
 }
 
 func run() int {
@@ -50,6 +58,20 @@ func run() int {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, exitcode.Format(err))
 		return exitcode.Code(err)
+	}
+
+	// When double-clicked from Explorer with no arguments, show help
+	// plus a setup hint so the window isn't just a blank flash.
+	if mousetrap.StartedByExplorer() && len(args) == 0 {
+		root.SetArgs([]string{"--help"})
+		_ = root.Execute()
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "To use mcp2cli, open a terminal (PowerShell or cmd) and run:")
+		fmt.Fprintln(os.Stdout, "  mcp2cli add time 'uvx mcp-server-time'")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "To install system-wide, run in PowerShell:")
+		fmt.Fprintln(os.Stdout, "  irm https://raw.githubusercontent.com/MaximeRivest/mcp2cli/main/install.ps1 | iex")
+		return 0
 	}
 
 	root.SetArgs(app.RewriteArgsForExposedMode(invocation, args))
