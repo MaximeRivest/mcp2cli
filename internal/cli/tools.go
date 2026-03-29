@@ -510,17 +510,25 @@ func renderTools(w io.Writer, tools []types.Tool, output string, opts ...renderT
 // truncateDescription returns the first sentence of a description,
 // capped at 60 characters.
 func truncateDescription(desc string) string {
+	desc = stripTags(desc)
+	// Get first non-heading line
+	for _, line := range strings.Split(desc, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		desc = line
+		break
+	}
 	desc = strings.TrimSpace(desc)
 	if desc == "" {
 		return ""
 	}
-	// Take first sentence (up to first ". " or ".\n" boundary).
-	if idx := strings.Index(desc, ". "); idx >= 0 {
-		desc = desc[:idx+1]
-	} else if idx := strings.Index(desc, ".\n"); idx >= 0 {
+	// Take first sentence
+	if idx := strings.Index(desc, ". "); idx >= 0 && idx < 80 {
 		desc = desc[:idx+1]
 	}
-	const maxLen = 60
+	const maxLen = 70
 	if len(desc) > maxLen {
 		return desc[:maxLen-3] + "..."
 	}
@@ -565,11 +573,12 @@ func renderTool(w io.Writer, tool types.Tool, spec *inspect.ToolSpec, usagePrefi
 		}
 		fmt.Fprintln(w)
 
-		// DESCRIPTION — full text, cleaned up
+		// DESCRIPTION — full text, word-wrapped
 		desc, examples := parseExamples(view.Description)
 		desc = cleanDescriptionFull(desc)
 		if desc != "" {
-			fmt.Fprintf(w, "\n%s\n%s\n", bold("DESCRIPTION"), indentBlock(desc, "  "))
+			width := termWidth()
+			fmt.Fprintf(w, "\n%s\n%s\n", bold("DESCRIPTION"), wordWrap(desc, width, "  "))
 		}
 
 		// USAGE
@@ -596,7 +605,19 @@ func renderTool(w io.Writer, tool types.Tool, spec *inspect.ToolSpec, usagePrefi
 		// ARGS
 		if len(spec.Arguments) > 0 {
 			fmt.Fprintf(w, "%s\n", bold("ARGS"))
-			writer := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
+			width := termWidth()
+			// Find max flag+type width for alignment
+			maxFlagLen := 0
+			for _, arg := range view.Args {
+				flagStr := fmt.Sprintf("  --%s %s", arg.Name, arg.Type)
+				if len(flagStr) > maxFlagLen {
+					maxFlagLen = len(flagStr)
+				}
+			}
+			descCol := maxFlagLen + 2
+			if descCol > 40 {
+				descCol = 40
+			}
 			for _, arg := range view.Args {
 				details := cleanArgForDisplay(arg.Description)
 				if arg.Required {
@@ -608,10 +629,28 @@ func renderTool(w io.Writer, tool types.Tool, spec *inspect.ToolSpec, usagePrefi
 					}
 					details += dim(fmt.Sprintf("Default: %v.", arg.Default))
 				}
-				fmt.Fprintf(writer, "  %s %s\t%s\n", cyan("--"+arg.Name), dim(arg.Type), strings.TrimSpace(details))
-			}
-			if err := writer.Flush(); err != nil {
-				return err
+				details = strings.TrimSpace(details)
+				flagPart := fmt.Sprintf("  %s %s", cyan("--"+arg.Name), dim(arg.Type))
+				flagPartLen := len(fmt.Sprintf("  --%s %s", arg.Name, arg.Type)) // visible length without ANSI
+				if details == "" {
+					fmt.Fprintln(w, flagPart)
+				} else {
+					padding := descCol - flagPartLen
+					if padding < 2 {
+						padding = 2
+					}
+					descIndent := strings.Repeat(" ", descCol)
+					descWidth := width - descCol
+					if descWidth < 30 {
+						descWidth = 30
+					}
+					wrapped := wrapPlain(details, descWidth)
+					lines := strings.Split(wrapped, "\n")
+					fmt.Fprintf(w, "%s%s%s\n", flagPart, strings.Repeat(" ", padding), lines[0])
+					for _, line := range lines[1:] {
+						fmt.Fprintf(w, "%s%s\n", descIndent, line)
+					}
+				}
 			}
 		}
 		return nil
@@ -1074,6 +1113,53 @@ func colorizeExample(s string) string {
 		}
 	}
 	return b.String()
+}
+
+// wrapPlain wraps text to maxWidth, breaking on word boundaries.
+// Unlike wordWrap, this does not add indent — caller handles alignment.
+func wrapPlain(text string, maxWidth int) string {
+	if maxWidth <= 0 || len(text) <= maxWidth {
+		return text
+	}
+	// Strip ANSI for length calculation but preserve in output
+	// Simple approach: wrap on visible length
+	words := strings.Fields(text)
+	var result strings.Builder
+	lineLen := 0
+	for i, word := range words {
+		visLen := visibleLen(word)
+		if i == 0 {
+			result.WriteString(word)
+			lineLen = visLen
+		} else if lineLen+1+visLen > maxWidth {
+			result.WriteString("\n" + word)
+			lineLen = visLen
+		} else {
+			result.WriteString(" " + word)
+			lineLen += 1 + visLen
+		}
+	}
+	return result.String()
+}
+
+// visibleLen returns the length of a string excluding ANSI escape codes.
+func visibleLen(s string) int {
+	n := 0
+	inEsc := false
+	for _, r := range s {
+		if r == '\033' {
+			inEsc = true
+			continue
+		}
+		if inEsc {
+			if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') {
+				inEsc = false
+			}
+			continue
+		}
+		n++
+	}
+	return n
 }
 
 // stripTags removes XML/HTML tags from a string.

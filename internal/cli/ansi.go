@@ -2,6 +2,7 @@ package cli
 
 import (
 	"os"
+	"strings"
 
 	"golang.org/x/term"
 )
@@ -71,4 +72,59 @@ func boldCyan(s string) string {
 		return s
 	}
 	return ansiBold + ansiCyan + s + ansiReset
+}
+
+// termWidth returns the terminal width, defaulting to 80.
+func termWidth() int {
+	w, _, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil || w <= 0 {
+		return 80
+	}
+	return w
+}
+
+// wordWrap wraps text to fit within maxWidth, adding indent to continuation lines.
+func wordWrap(text string, maxWidth int, indent string) string {
+	if maxWidth <= 0 {
+		maxWidth = 80
+	}
+	contentWidth := maxWidth - len(indent)
+	if contentWidth < 20 {
+		contentWidth = 20
+	}
+
+	var result strings.Builder
+	paragraphs := strings.Split(text, "\n")
+	for i, para := range paragraphs {
+		if i > 0 {
+			result.WriteString("\n")
+		}
+		para = strings.TrimSpace(para)
+		if para == "" {
+			continue
+		}
+		// Don't wrap short lines or bullet points
+		if len(para) <= contentWidth {
+			result.WriteString(indent + para)
+			continue
+		}
+		// Word wrap
+		words := strings.Fields(para)
+		lineLen := 0
+		firstWord := true
+		for _, word := range words {
+			if firstWord {
+				result.WriteString(indent + word)
+				lineLen = len(indent) + len(word)
+				firstWord = false
+			} else if lineLen+1+len(word) > maxWidth {
+				result.WriteString("\n" + indent + word)
+				lineLen = len(indent) + len(word)
+			} else {
+				result.WriteString(" " + word)
+				lineLen += 1 + len(word)
+			}
+		}
+	}
+	return result.String()
 }
