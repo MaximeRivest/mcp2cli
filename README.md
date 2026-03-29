@@ -52,7 +52,7 @@ Two steps: **add** a server once, then **use** it by name.
 ### Step 1: Add a server
 
 ```bash
-mcp2cli add time 'npx -y @modelcontextprotocol/server-time'
+mcp2cli add time 'uvx mcp-server-time'
 ```
 
 That's it. The second argument is the command to start the server. URLs are detected automatically:
@@ -264,7 +264,7 @@ These are real commands on your `PATH`, so `mcp-<TAB>` works in your shell.
 ## Managing servers
 
 ```bash
-mcp2cli add time 'npx -y @modelcontextprotocol/server-time'   # save
+mcp2cli add time 'uvx mcp-server-time'                        # save
 mcp2cli ls                                                     # list all
 mcp2cli rm time                                                # remove (cleans up exposed commands too)
 ```

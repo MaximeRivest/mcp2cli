@@ -27,7 +27,7 @@ func NewRootCommand(opts Options) (*cobra.Command, error) {
 	long := fmt.Sprintf(`%s turns MCP servers into delightful command-line tools.
 
 Quick start:
-  %s add time 'npx -y @modelcontextprotocol/server-time'
+  %s add time 'uvx mcp-server-time'
   %s time tools
   %s time get-current-time --timezone America/New_York`, use, use, use, use)
 	if opts.Invocation.IsExposedCommand() {

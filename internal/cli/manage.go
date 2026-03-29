@@ -33,7 +33,7 @@ func newAddCommand(state *State) *cobra.Command {
 The second argument is the command to start a local server, or a URL for a remote one.
 URLs (starting with http:// or https://) are detected automatically.`,
 		Example: `  # Local server (started on demand)
-  mcp2cli add time 'npx -y @modelcontextprotocol/server-time'
+  mcp2cli add time 'uvx mcp-server-time'
 
   # Remote server with OAuth
   mcp2cli add notion https://mcp.notion.com/mcp --auth oauth
@@ -110,7 +110,11 @@ URLs (starting with http:// or https://) are detected automatically.`,
 				}
 			}
 
-			fmt.Fprintf(cmd.OutOrStdout(), "\nnow use it:\n  mcp2cli %s tools\n  mcp2cli %s shell\n", name, name)
+			progName := state.Options.Invocation.ProgramName
+			if progName == "" {
+				progName = "mcp2cli"
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "\nnow use it:\n  %s %s tools\n  %s %s shell\n", progName, name, progName, name)
 			return nil
 		},
 	}
