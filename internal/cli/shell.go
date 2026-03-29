@@ -12,15 +12,15 @@ import (
 
 	"github.com/chzyer/readline"
 	"github.com/kballard/go-shellquote"
-	"github.com/maximerivest/mcp2cli/internal/cache"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/invoke"
-	mcpclient "github.com/maximerivest/mcp2cli/internal/mcp/client"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/naming"
-	"github.com/maximerivest/mcp2cli/internal/schema/inspect"
-	"github.com/maximerivest/mcp2cli/internal/serverref"
+	"github.com/maximerivest/mcptocli/internal/cache"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/invoke"
+	mcpclient "github.com/maximerivest/mcptocli/internal/mcp/client"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/schema/inspect"
+	"github.com/maximerivest/mcptocli/internal/serverref"
 	"github.com/spf13/cobra"
 )
 
@@ -58,10 +58,10 @@ func newShellCommand(state *State) *cobra.Command {
 The shell supports tab completion, history, and all tool/resource/prompt
 commands. Type "help" inside the shell for available commands.`,
 		Example: `  # Open a shell for a registered server
-  mcp2cli shell weather
+  mcptocli shell weather
 
   # Open a shell for a one-off server
-  mcp2cli shell --url https://mcp.example.com/sse`,
+  mcptocli shell --url https://mcp.example.com/sse`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			outputMode, err := normalizeOutputMode(output)
 			if err != nil {

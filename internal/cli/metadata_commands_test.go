@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/app"
-	"github.com/maximerivest/mcp2cli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/app"
+	"github.com/maximerivest/mcptocli/internal/config"
 )
 
 func TestResourcesAndPromptsCommands(t *testing.T) {
@@ -24,7 +24,7 @@ func TestResourcesAndPromptsCommands(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestResourcesAndPromptsCommands(t *testing.T) {
 		t.Fatalf("unexpected resources output: %s", stdout.String())
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -56,7 +56,7 @@ func TestResourcesAndPromptsCommands(t *testing.T) {
 		t.Fatalf("resource output = %q", got)
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -74,7 +74,7 @@ func TestResourcesAndPromptsCommands(t *testing.T) {
 		}
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}

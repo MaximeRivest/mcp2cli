@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 set -e
 
-REPO="MaximeRivest/mcp2cli"
+REPO="MaximeRivest/mcptocli"
 INSTALL_DIR="/usr/local/bin"
-BINARY="mcp2cli"
+BINARY="mcptocli"
 
 # ── detect platform ──────────────────────────────────────────────────────────
 
@@ -52,21 +52,21 @@ fi
 # ── shell completions ────────────────────────────────────────────────────────
 
 SHELL_NAME=$(basename "$SHELL" 2>/dev/null || echo "")
-COMPLETION_LINE='source <(mcp2cli completion bash)'
+COMPLETION_LINE='source <(mcptocli completion bash)'
 
 setup_completions() {
   case "$SHELL_NAME" in
     bash)
       RC="$HOME/.bashrc"
-      LINE='source <(mcp2cli completion bash)'
+      LINE='source <(mcptocli completion bash)'
       ;;
     zsh)
       RC="$HOME/.zshrc"
-      LINE='source <(mcp2cli completion zsh)'
+      LINE='source <(mcptocli completion zsh)'
       ;;
     fish)
       RC="$HOME/.config/fish/config.fish"
-      LINE='mcp2cli completion fish | source'
+      LINE='mcptocli completion fish | source'
       ;;
     *)
       return
@@ -78,7 +78,7 @@ setup_completions() {
   fi
 
   echo "" >> "$RC"
-  echo "# mcp2cli shell completions" >> "$RC"
+  echo "# mcptocli shell completions" >> "$RC"
   echo "$LINE" >> "$RC"
   echo "Tab completions added to ${RC}"
 }
@@ -113,12 +113,12 @@ setup_alias
 
 # ── verify ───────────────────────────────────────────────────────────────────
 
-VERSION=$(mcp2cli version 2>/dev/null | head -n1 || echo "installed")
+VERSION=$(mcptocli version 2>/dev/null | head -n1 || echo "installed")
 echo ""
-echo "✓ mcp2cli ${VERSION}"
+echo "✓ mcptocli ${VERSION}"
 echo ""
 echo "Get started:"
-echo "  mcp2cli add time 'uvx mcp-server-time'"
-echo "  mcp2cli time tools"
+echo "  mcptocli add time 'uvx mcp-server-time'"
+echo "  mcptocli time tools"
 echo ""
 echo "Open a new terminal for tab completions to take effect."

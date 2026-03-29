@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"github.com/maximerivest/mcp2cli/internal/cache"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/cache"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/naming"
 )
 
 func cacheMetadata(state *State, server *config.Server, mutate func(*cache.Metadata)) {

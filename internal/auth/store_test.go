@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/config"
 )
 
 func TestStoreSaveLoadFallback(t *testing.T) {

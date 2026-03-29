@@ -1,10 +1,10 @@
-# mcp2cli Implementation Plan
+# mcptocli Implementation Plan
 
 ## Overview
 
-Build `mcp2cli` as a single Go binary that turns any MCP server into a delightful command-line tool.
+Build `mcptocli` as a single Go binary that turns any MCP server into a delightful command-line tool.
 
-If `mcp2py` makes MCP feel like a native Python library, `mcp2cli` should make MCP feel native to the shell:
+If `mcp2py` makes MCP feel like a native Python library, `mcptocli` should make MCP feel native to the shell:
 
 - easy to discover
 - easy to call
@@ -71,40 +71,40 @@ This plan translates the `README.md` UX into an implementation roadmap with conc
 
 ## Definition of done
 
-`mcp2cli` v1 is done when all of the following work end-to-end:
+`mcptocli` v1 is done when all of the following work end-to-end:
 
 ```bash
 # Direct local use
-mcp2cli tools --command 'npx -y @h1deya/mcp-server-weather'
-mcp2cli tool --command 'npx -y @h1deya/mcp-server-weather' get-alerts --state CA
+mcptocli tools --command 'npx -y @h1deya/mcp-server-weather'
+mcptocli tool --command 'npx -y @h1deya/mcp-server-weather' get-alerts --state CA
 
 # Registered local use
-mcp2cli add weather --command 'npx -y @h1deya/mcp-server-weather'
-mcp2cli tools weather
-mcp2cli tool weather get-forecast --latitude 37.7749 --longitude -122.4194 -o json
+mcptocli add weather --command 'npx -y @h1deya/mcp-server-weather'
+mcptocli tools weather
+mcptocli tool weather get-forecast --latitude 37.7749 --longitude -122.4194 -o json
 
 # Exposed CLI use
-mcp2cli expose weather
+mcptocli expose weather
 mcp-weather tools
 mcp-weather get-forecast --latitude 37.7749 --longitude -122.4194
-mcp2cli expose weather --as wea
+mcptocli expose weather --as wea
 wea get-alerts --state CA
 
 # Remote use
-mcp2cli add notion --url https://mcp.notion.com/mcp --auth oauth
-mcp2cli login notion
-mcp2cli tool notion notion-get-self
+mcptocli add notion --url https://mcp.notion.com/mcp --auth oauth
+mcptocli login notion
+mcptocli tool notion notion-get-self
 
 # Resources and prompts
-mcp2cli resources weather
-mcp2cli prompts weather
-mcp2cli prompt weather some-prompt --topic mcp
+mcptocli resources weather
+mcptocli prompts weather
+mcptocli prompt weather some-prompt --topic mcp
 
 # Shell mode
-mcp2cli shell weather
+mcptocli shell weather
 
 # Scripting guarantees
-mcp2cli tool weather get-alerts --state CA -o json | jq
+mcptocli tool weather get-alerts --state CA -o json | jq
 ```
 
 And all of the following are true:
@@ -133,7 +133,7 @@ Code generation is explicitly deferred.
 
 ### 2. Multicall shims for exposed commands
 
-`mcp2cli` should also support being invoked through lightweight shims such as:
+`mcptocli` should also support being invoked through lightweight shims such as:
 
 - `mcp-weather`
 - `wea`
@@ -174,7 +174,7 @@ But tool-specific arguments are dynamic and derived at runtime from MCP metadata
 ### 4. Custom runtime argument parser for tool calls
 
 Cobra will handle static commands and known flags.
-Tool-specific arguments will be parsed by `mcp2cli` after it introspects the selected MCP tool.
+Tool-specific arguments will be parsed by `mcptocli` after it introspects the selected MCP tool.
 
 This is necessary because:
 
@@ -247,7 +247,7 @@ Prefer the Go standard library for:
 
 ```text
 cmd/
-  mcp2cli/
+  mcptocli/
     main.go
 
 internal/
@@ -306,24 +306,24 @@ Commands that operate on a server share the same selection model:
 ### Resolution precedence
 
 1. explicit CLI flags (`--command`, `--url`, `--header`, etc.)
-2. local config (`.mcp2cli.yaml`)
-3. global config (`~/.config/mcp2cli/config.yaml`)
+2. local config (`.mcptocli.yaml`)
+3. global config (`~/.config/mcptocli/config.yaml`)
 4. built-in defaults
 
 ### Accepted patterns
 
 ```bash
 # registered server
-mcp2cli tools weather
-mcp2cli tool weather get-alerts --state CA
+mcptocli tools weather
+mcptocli tool weather get-alerts --state CA
 
 # direct local
-mcp2cli tools --command 'npx -y @h1deya/mcp-server-weather'
-mcp2cli tool --command 'npx -y @h1deya/mcp-server-weather' get-alerts --state CA
+mcptocli tools --command 'npx -y @h1deya/mcp-server-weather'
+mcptocli tool --command 'npx -y @h1deya/mcp-server-weather' get-alerts --state CA
 
 # direct remote
-mcp2cli tools --url https://mcp.example.com/mcp
-mcp2cli tool --url https://mcp.example.com/mcp --auth oauth notion-get-self
+mcptocli tools --url https://mcp.example.com/mcp
+mcptocli tool --url https://mcp.example.com/mcp --auth oauth notion-get-self
 ```
 
 ### Common connection flags
@@ -398,7 +398,7 @@ mcp-weather tool get-forecast --latitude 37.7749 --longitude -122.4194
 
 Store user-managed shims in a directory like:
 
-- `~/.local/share/mcp2cli/bin` on Linux/macOS
+- `~/.local/share/mcptocli/bin` on Linux/macOS
 - platform-appropriate equivalent on Windows
 
 Users can add that directory to `PATH` to make `mcp-<TAB>` work naturally.
@@ -409,8 +409,8 @@ Users can add that directory to `PATH` to make `mcp-<TAB>` work naturally.
 
 ### Global and local files
 
-- Global: `~/.config/mcp2cli/config.yaml`
-- Local: `.mcp2cli.yaml`
+- Global: `~/.config/mcptocli/config.yaml`
+- Local: `.mcptocli.yaml`
 
 ### Example format
 
@@ -474,13 +474,13 @@ type ServerConfig struct {
 ### Config behavior
 
 - local config overrides global config for matching server names
-- `mcp2cli add --local` writes to `.mcp2cli.yaml`
-- `mcp2cli add` defaults to global config
-- `mcp2cli expose weather` adds the default exposed name `mcp-weather` and creates that shim
-- `mcp2cli expose weather --as wea` adds exposed name `wea` and creates that shim
-- `mcp2cli unexpose weather --as wea` removes that alias and shim
+- `mcptocli add --local` writes to `.mcptocli.yaml`
+- `mcptocli add` defaults to global config
+- `mcptocli expose weather` adds the default exposed name `mcp-weather` and creates that shim
+- `mcptocli expose weather --as wea` adds exposed name `wea` and creates that shim
+- `mcptocli unexpose weather --as wea` removes that alias and shim
 - alias uniqueness is validated before writing config or creating shims
-- `mcp2cli ls` shows source column (`global`, `local`) plus exposed aliases
+- `mcptocli ls` shows source column (`global`, `local`) plus exposed aliases
 - writes preserve unknown fields when possible
 - config write operations are atomic
 
@@ -525,8 +525,8 @@ Beautiful flags/positionals are supported when the input schema is:
 For complex schemas, always support a raw JSON input path:
 
 ```bash
-mcp2cli tool api complex-tool --input @payload.json
-mcp2cli tool api complex-tool --input @-
+mcptocli tool api complex-tool --input @payload.json
+mcptocli tool api complex-tool --input @-
 ```
 
 This ensures every valid MCP tool remains callable even when schema-to-flags mapping is not delightful.
@@ -646,12 +646,12 @@ Errors should be:
 
 ```text
 error: missing required argument: state
-hint: run `mcp2cli tools weather get-alerts`
+hint: run `mcptocli tools weather get-alerts`
 ```
 
 ```text
 error: authentication required
-hint: run `mcp2cli login notion`
+hint: run `mcptocli login notion`
 ```
 
 ## Exit codes
@@ -778,7 +778,7 @@ Behavior:
 
 ### Goals
 
-- `mcp2cli login notion`
+- `mcptocli login notion`
 - browser opens automatically when possible
 - fallback to printing URL if browser launch fails
 - token stored securely
@@ -814,9 +814,9 @@ Use a stable key derived from:
 
 Support:
 
-- `mcp2cli resources <server>`
-- `mcp2cli resources <server> <resource>` for inspection
-- `mcp2cli resource <server> <resource>` to read contents
+- `mcptocli resources <server>`
+- `mcptocli resources <server> <resource>` for inspection
+- `mcptocli resource <server> <resource>` to read contents
 - `-o raw|json|yaml|auto`
 
 Implementation notes:
@@ -829,9 +829,9 @@ Implementation notes:
 
 Support:
 
-- `mcp2cli prompts <server>`
-- `mcp2cli prompts <server> <prompt>` for inspection
-- `mcp2cli prompt <server> <prompt> [args...]`
+- `mcptocli prompts <server>`
+- `mcptocli prompts <server> <prompt>` for inspection
+- `mcptocli prompt <server> <prompt> [args...]`
 
 Prompt arguments are generally simpler than tool schemas and can use the same runtime parser with a smaller adapter.
 
@@ -848,9 +848,9 @@ By default:
 
 Generate static completion scripts:
 
-- `mcp2cli completion bash`
-- `mcp2cli completion zsh`
-- `mcp2cli completion fish`
+- `mcptocli completion bash`
+- `mcptocli completion zsh`
+- `mcptocli completion fish`
 
 ## Dynamic completion behavior
 
@@ -881,7 +881,7 @@ Use metadata cache with TTL.
 
 Store under:
 
-- `~/.cache/mcp2cli/metadata/...`
+- `~/.cache/mcptocli/metadata/...`
 
 Cache contents:
 
@@ -904,7 +904,7 @@ Completion policy:
 
 ## Goals
 
-`mcp2cli shell <server>` should provide:
+`mcptocli shell <server>` should provide:
 
 - persistent connection
 - history
@@ -988,7 +988,7 @@ Start with:
 
 ## Doctor plan
 
-`mcp2cli doctor <server>` should answer: “why doesn’t this work?”
+`mcptocli doctor <server>` should answer: “why doesn’t this work?”
 
 Checks:
 
@@ -1121,7 +1121,7 @@ These are guiding targets, not hard SLAs.
 ### Files
 
 - `go.mod`
-- `cmd/mcp2cli/main.go`
+- `cmd/mcptocli/main.go`
 - `internal/cli/root.go`
 - `.github/workflows/ci.yml`
 - `.goreleaser.yaml`
@@ -1129,7 +1129,7 @@ These are guiding targets, not hard SLAs.
 
 ### Exit criteria
 
-- `mcp2cli version` works
+- `mcptocli version` works
 - CI passes on all supported platforms
 
 ---
@@ -1409,24 +1409,24 @@ That path gets to visible value quickly while protecting the hardest part of the
  - tests + CI scaffold
 
  Implemented commands:
- - mcp2cli version
- - mcp2cli add
- - mcp2cli ls
- - mcp2cli rm
- - mcp2cli expose
- - mcp2cli unexpose
- - mcp2cli completion
+ - mcptocli version
+ - mcptocli add
+ - mcptocli ls
+ - mcptocli rm
+ - mcptocli expose
+ - mcptocli unexpose
+ - mcptocli completion
 
  Implemented behavior:
- - mcp2cli expose weather creates default mcp-weather
- - mcp2cli expose weather --as wea creates wea
+ - mcptocli expose weather creates default mcp-weather
+ - mcptocli expose weather --as wea creates wea
  - --as is treated as the full exposed command name
  - exposed commands route shorthand tool calls:
      - wea get-forecast ... rewrites to wea tool get-forecast ...
 
  Files added:
  - go.mod
- - cmd/mcp2cli/main.go
+ - cmd/mcptocli/main.go
  - internal/app/invocation.go
  - internal/config/config.go
  - internal/expose/expose.go
@@ -1453,7 +1453,7 @@ That path gets to visible value quickly while protecting the hardest part of the
 
  Next best step:
  1. implement Phase 2 stdio MCP client
- 2. make mcp2cli tools --command ... work for real
+ 2. make mcptocli tools --command ... work for real
  3. then make exposed commands like wea tools work on top of that
 
  If you want, I can continue immediately with the stdio transport and real tools support.
@@ -1475,10 +1475,10 @@ Commit:
  - MCP initialize handshake
  - tools/list
  - tools/call
- - mcp2cli tools <server>
- - mcp2cli tools --command '...'
- - mcp2cli tool <server> <tool> --input ...
- - mcp2cli tool --command '...' <tool> --input ...
+ - mcptocli tools <server>
+ - mcptocli tools --command '...'
+ - mcptocli tool <server> <tool> --input ...
+ - mcptocli tool --command '...' <tool> --input ...
  - exposed commands also work:
      - wea tools
      - wea echo --input '{"message":"hi"}'
@@ -1516,11 +1516,11 @@ Commit:
  Example now:
 
  bash
-   mcp2cli add weather --command 'go run /path/to/testdata/servers/stdiofixture'
-   mcp2cli tools weather
-   mcp2cli tool weather echo --input '{"message":"hello"}'
+   mcptocli add weather --command 'go run /path/to/testdata/servers/stdiofixture'
+   mcptocli tools weather
+   mcptocli tool weather echo --input '{"message":"hello"}'
 
-   mcp2cli expose weather --as wea
+   mcptocli expose weather --as wea
    wea tools
    wea echo --input '{"message":"hi"}'
 
@@ -1576,7 +1576,7 @@ Commit:
  Tool inspection:
 
  ```bash
-   mcp2cli tools weather get-forecast
+   mcptocli tools weather get-forecast
  ```
 
  Now renders like:
@@ -1586,7 +1586,7 @@ Commit:
      get-forecast - Get weather forecast for a location
 
    USAGE
-     mcp2cli tool weather get-forecast --latitude <float> --longitude <float>
+     mcptocli tool weather get-forecast --latitude <float> --longitude <float>
 
    ARGS
      --latitude float   Required. Latitude of the location
@@ -1596,24 +1596,24 @@ Commit:
  Schema-driven invocation:
 
  ```bash
-   mcp2cli tool weather get-forecast --latitude 37.7 --longitude -122.4
-   mcp2cli tool weather get-forecast 37.7 -122.4
+   mcptocli tool weather get-forecast --latitude 37.7 --longitude -122.4
+   mcptocli tool weather get-forecast 37.7 -122.4
    wea get-forecast --latitude 1 --longitude 2
  ```
 
  Raw JSON fallback still works:
 
  ```bash
-   mcp2cli tool weather echo --input '{"message":"hello"}'
+   mcptocli tool weather echo --input '{"message":"hello"}'
  ```
 
  Output modes now supported on current tool flows:
 
  ```bash
-   mcp2cli tools weather -o json
-   mcp2cli tools weather get-forecast -o yaml
-   mcp2cli tool weather get-forecast 1 2 -o json
-   mcp2cli tool weather get-forecast 1 2 -o raw
+   mcptocli tools weather -o json
+   mcptocli tools weather get-forecast -o yaml
+   mcptocli tool weather get-forecast 1 2 -o json
+   mcptocli tool weather get-forecast 1 2 -o raw
  ```
 
  Validation
@@ -1661,7 +1661,7 @@ Commit: 7d09ee94eb2ebbe2e47243074d35f7882721aa00
  - internal/exitcode/exitcode_test.go
 
  Updated:
- - cmd/mcp2cli/main.go
+ - cmd/mcptocli/main.go
  - internal/cli/state.go
  - internal/cli/tools.go
  - internal/invoke/toolargs.go
@@ -1677,14 +1677,14 @@ Commit: 7d09ee94eb2ebbe2e47243074d35f7882721aa00
 
  ```text
    error: missing required argument: longitude
-   hint: run `mcp2cli tools weather get-forecast`
+   hint: run `mcptocli tools weather get-forecast`
  ```
 
  and:
 
  ```text
    error: tool "nope" not found
-   hint: run `mcp2cli tools weather`
+   hint: run `mcptocli tools weather`
  ```
 
  Validation:

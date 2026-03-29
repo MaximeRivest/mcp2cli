@@ -1,9 +1,12 @@
 ---
+layout: ../../layouts/DocsLayout.astro
 title: Arguments
-description: How mcp2cli maps tool schemas to CLI flags
+description: How mcptocli maps tool schemas to CLI flags
 ---
 
-`mcp2cli` reads the tool's JSON schema and generates CLI flags automatically.
+# Arguments
+
+`mcptocli` reads the tool's JSON schema and generates CLI flags automatically.
 
 ## Named flags
 
@@ -56,4 +59,4 @@ For complex schemas, bypass flag parsing entirely:
 mcp api complex-tool --input '{"nested": {"key": "value"}}'
 ```
 
-The `--input` flag accepts a raw JSON object and sends it directly as the tool's arguments.
+> **Tip:** The `--input` flag accepts a raw JSON object and sends it directly as the tool's arguments — useful when a schema is deeply nested or hard to express as flags.

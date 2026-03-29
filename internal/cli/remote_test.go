@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/app"
-	"github.com/maximerivest/mcp2cli/internal/auth"
-	"github.com/maximerivest/mcp2cli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/app"
+	"github.com/maximerivest/mcptocli/internal/auth"
+	"github.com/maximerivest/mcptocli/internal/config"
 )
 
 func TestRemoteHTTPBearerFlow(t *testing.T) {
@@ -24,7 +24,7 @@ func TestRemoteHTTPBearerFlow(t *testing.T) {
 	server := newRemoteFixtureServer(t, "secret")
 	defer server.Close()
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestRemoteHTTPBearerFlow(t *testing.T) {
 		t.Fatalf("unexpected tools output: %s", stdout.String())
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -83,7 +83,7 @@ func TestLoginOAuthAndRemoteCall(t *testing.T) {
 	}
 	defer func() { auth.OpenURL = oldOpenURL }()
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestLoginOAuthAndRemoteCall(t *testing.T) {
 		t.Fatalf("unexpected login output: %s", stdout.String())
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -124,7 +124,7 @@ func TestDoctorRemote(t *testing.T) {
 	server := newRemoteFixtureServer(t, "secret")
 	defer server.Close()
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}

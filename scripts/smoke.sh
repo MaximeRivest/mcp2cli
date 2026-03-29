@@ -4,11 +4,11 @@ set -euo pipefail
 tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 
-bin="$tmpdir/mcp2cli"
+bin="$tmpdir/mcptocli"
 fixture_dir="$(pwd)/testdata/servers/stdiofixture"
 
 printf 'Building...\n'
-go build -o "$bin" ./cmd/mcp2cli
+go build -o "$bin" ./cmd/mcptocli
 
 printf 'Testing local stdio workflow...\n'
 XDG_CONFIG_HOME="$tmpdir/config" XDG_DATA_HOME="$tmpdir/data" "$bin" add weather --command "go run $fixture_dir" >/dev/null

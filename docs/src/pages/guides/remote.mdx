@@ -1,7 +1,10 @@
 ---
+layout: ../../layouts/DocsLayout.astro
 title: Remote Servers
 description: Connect to remote MCP servers with OAuth or bearer auth
 ---
+
+# Remote Servers
 
 ## Bearer token
 
@@ -12,7 +15,7 @@ mcp acme tools
 mcp acme search --query invoices
 ```
 
-The `--bearer-env` flag tells mcp2cli which environment variable holds the token. The token is never stored in config.
+The `--bearer-env` flag tells mcptocli which environment variable holds the token. The token is never stored in config.
 
 ## OAuth (browser login)
 
@@ -32,6 +35,8 @@ mcp login notion
 This triggers the OAuth flow without calling any tool — useful for ensuring auth is ready before scripting.
 
 ## Custom headers
+
+For services that use non-standard auth:
 
 ```bash
 mcp tool --url https://api.example.com/mcp --header "X-API-Key: secret" list-items

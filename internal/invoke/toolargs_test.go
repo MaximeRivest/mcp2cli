@@ -3,7 +3,7 @@ package invoke
 import (
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/schema/inspect"
+	"github.com/maximerivest/mcptocli/internal/schema/inspect"
 )
 
 func TestParseToolArgumentsFlagsAndPositionals(t *testing.T) {

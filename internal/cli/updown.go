@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/adrg/xdg"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/daemon"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/daemon"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
 	"github.com/spf13/cobra"
 )
 
@@ -26,17 +26,17 @@ By default, the server runs in stdio mode (single client, fastest).
 With --share, the server runs in HTTP mode so multiple clients
 (terminal, Claude Desktop, notebooks) can share one session.`,
 		Example: `  # Start in the background (fast, single client)
-  mcp2cli weather up
+  mcptocli weather up
 
   # Start in shared HTTP mode (multiple clients)
-  mcp2cli weather up --share
+  mcptocli weather up --share
 
   # Then use normally
-  mcp2cli weather get-forecast --city Paris`,
+  mcptocli weather get-forecast --city Paris`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			server, err := state.BoundServer()
 			if err != nil || server == nil {
-				return exitcode.New(exitcode.Usage, "up requires a server context (use: mcp2cli <server> up)")
+				return exitcode.New(exitcode.Usage, "up requires a server context (use: mcptocli <server> up)")
 			}
 			if server.Command == "" {
 				return exitcode.New(exitcode.Config, "up only works with local servers")
@@ -123,11 +123,11 @@ func newDownCommand(state *State) *cobra.Command {
 	return &cobra.Command{
 		Use:   "down",
 		Short: "Stop the background server",
-		Example: `  mcp2cli weather down`,
+		Example: `  mcptocli weather down`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			server, err := state.BoundServer()
 			if err != nil || server == nil {
-				return exitcode.New(exitcode.Usage, "down requires a server context (use: mcp2cli <server> down)")
+				return exitcode.New(exitcode.Usage, "down requires a server context (use: mcptocli <server> down)")
 			}
 			// Stop whichever mode is running
 			stoppedShared := false

@@ -1,8 +1,8 @@
 package inspect
 
 import (
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/naming"
 )
 
 // InspectPrompt converts a prompt definition into a ToolSpec-like structure so

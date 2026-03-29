@@ -1,7 +1,10 @@
 ---
+layout: ../../layouts/DocsLayout.astro
 title: Background Mode
 description: Keep servers running for instant responses
 ---
+
+# Background Mode
 
 Local MCP servers are normally started on every command and shut down after. For repeated use, keep the server running in the background.
 
@@ -34,9 +37,7 @@ mcp time get-current-time 'America/New_York'   # auto-detects the running server
 mcp time down                                   # stop when done
 ```
 
-:::tip
-Shared mode is ideal when you want one persistent server session shared across tools — for example, a database server where you want to keep the connection alive.
-:::
+> **Tip:** Shared mode is ideal when you want one persistent server session shared across tools — for example, a database server where you want to keep the connection alive.
 
 ## Checking status
 

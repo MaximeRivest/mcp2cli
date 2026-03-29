@@ -3,8 +3,8 @@ package serverref
 import (
 	"strings"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
 )
 
 // Options contains CLI-level overrides used to resolve a server reference.
@@ -69,7 +69,7 @@ func Resolve(repo *config.Repository, bound *config.Server, opts Options) (*Reso
 
 	server, err := repo.ResolveServer(opts.ExplicitName)
 	if err != nil {
-		return nil, exitcode.WithHint(exitcode.Wrapf(exitcode.Config, err, "server %q not found", opts.ExplicitName), "run `mcp2cli ls`")
+		return nil, exitcode.WithHint(exitcode.Wrapf(exitcode.Config, err, "server %q not found", opts.ExplicitName), "run `mcptocli ls`")
 	}
 	if err := applyOverrides(server, opts); err != nil {
 		return nil, err

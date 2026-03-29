@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
 )
 
 func TestHandleObjectSchema(t *testing.T) {

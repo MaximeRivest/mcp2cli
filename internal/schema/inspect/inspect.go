@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/naming"
 )
 
 // ToolSpec is a schema-derived view of a tool suitable for CLI rendering and parsing.

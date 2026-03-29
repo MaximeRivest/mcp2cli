@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
 )
 
 // HeadersForServer resolves HTTP headers, including bearer and oauth auth.
@@ -49,13 +49,13 @@ func HeadersForServer(store *Store, server *config.Server) (map[string]string, e
 
 func loginHint(server *config.Server) string {
 	if server == nil {
-		return "run `mcp2cli login <server>`"
+		return "run `mcptocli login <server>`"
 	}
 	if server.Name != "" && server.Name != "(direct)" {
-		return fmt.Sprintf("run `mcp2cli login %s`", server.Name)
+		return fmt.Sprintf("run `mcptocli login %s`", server.Name)
 	}
 	if server.URL != "" {
-		return fmt.Sprintf("run `mcp2cli login --url %s --auth oauth`", server.URL)
+		return fmt.Sprintf("run `mcptocli login --url %s --auth oauth`", server.URL)
 	}
-	return "run `mcp2cli login <server>`"
+	return "run `mcptocli login <server>`"
 }

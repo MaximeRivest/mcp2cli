@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/adrg/xdg"
-	"github.com/maximerivest/mcp2cli/internal/daemon"
-	"github.com/maximerivest/mcp2cli/internal/elicitation"
-	mcpclient "github.com/maximerivest/mcp2cli/internal/mcp/client"
+	"github.com/maximerivest/mcptocli/internal/daemon"
+	"github.com/maximerivest/mcptocli/internal/elicitation"
+	mcpclient "github.com/maximerivest/mcptocli/internal/mcp/client"
 )
 
 func terminalConnectOptions(in io.Reader, errOut io.Writer) mcpclient.ConnectOptions {

@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/schema/inspect"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/schema/inspect"
 	"golang.org/x/term"
 )
 

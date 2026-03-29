@@ -1,7 +1,10 @@
 ---
+layout: ../../layouts/DocsLayout.astro
 title: Using Tools
 description: Discover, inspect, and call MCP tools
 ---
+
+# Using Tools
 
 ## List tools
 
@@ -36,6 +39,8 @@ ARGS
   --timezone string  Required. IANA timezone name (e.g., 'America/New_York').
 ```
 
+Every tool gets auto-generated usage, flags, and descriptions — straight from the MCP schema.
+
 ## Call a tool
 
 ```bash
@@ -50,7 +55,9 @@ Required scalar arguments can be passed positionally:
 mcp time get-current-time 'America/New_York'
 ```
 
-### One-off use (no registration)
+See the full [Arguments guide](/mcptocli/guides/arguments) for arrays, booleans, JSON input, and more.
+
+## One-off use (no registration)
 
 You don't have to register a server to use it:
 
@@ -59,3 +66,5 @@ mcp tools --command 'uvx mcp-server-time'
 mcp tool --command 'uvx mcp-server-time' get-current-time 'America/New_York'
 mcp tool --url https://api.example.com/mcp search --query test
 ```
+
+> **Tip:** One-off mode is great for trying servers before committing to `mcp add`.

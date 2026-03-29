@@ -1,56 +1,26 @@
 import { defineConfig } from "astro/config";
-import starlight from "@astrojs/starlight";
+import tailwindcss from "@tailwindcss/vite";
+import mdx from "@astrojs/mdx";
+import expressiveCode from "astro-expressive-code";
 
 export default defineConfig({
   site: "https://maximerivest.github.io",
-  base: "/mcp2cli",
+  base: "/mcptocli",
+  output: "static",
   integrations: [
-    starlight({
-      title: "mcp2cli",
-      customCss: ["./src/styles/custom.css"],
-      expressiveCode: {
-        themes: ["github-light"],
-        styleOverrides: {
-          borderRadius: "10px",
-        },
-        frames: {
-          showCopyToClipboardButton: true,
-          extractFileNameFromCode: false,
-          removeCommentsWhenCopyingTerminalFrames: true,
-        },
+    expressiveCode({
+      themes: ["dark-plus"],
+      frames: {
+        showCopyToClipboardButton: true,
+        extractFileNameFromCode: false,
       },
-      social: [
-        {
-          icon: "github",
-          label: "GitHub",
-          href: "https://github.com/MaximeRivest/mcp2cli",
-        },
-      ],
-      sidebar: [
-        { label: "Overview", link: "/" },
-        { label: "Installation", slug: "installation" },
-        { label: "Quick Start", slug: "quick-start" },
-        {
-          label: "Guides",
-          items: [
-            { label: "Using Tools", slug: "guides/tools" },
-            { label: "Remote Servers", slug: "guides/remote" },
-            { label: "Background Mode", slug: "guides/background" },
-            { label: "Interactive Shell", slug: "guides/shell" },
-            { label: "Exposed Commands", slug: "guides/expose" },
-            { label: "Output Formats", slug: "guides/output" },
-            { label: "Arguments", slug: "guides/arguments" },
-          ],
-        },
-        {
-          label: "Reference",
-          items: [
-            { label: "All Commands", slug: "reference/commands" },
-            { label: "Configuration", slug: "reference/config" },
-            { label: "Troubleshooting", slug: "reference/troubleshooting" },
-          ],
-        },
-      ],
+      defaultProps: {
+        frame: "code",
+      },
     }),
+    mdx(),
   ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

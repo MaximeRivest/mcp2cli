@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
 	"github.com/pkg/browser"
 )
 
@@ -171,7 +171,7 @@ func oauthConfigForServer(server *config.Server) (*oauthConfig, error) {
 	}
 	clientID := server.OAuthClientID
 	if clientID == "" {
-		clientID = "mcp2cli"
+		clientID = "mcptocli"
 	}
 	return &oauthConfig{AuthorizeURL: authorizeURL, TokenURL: tokenURL, ClientID: clientID, Scopes: append([]string(nil), server.OAuthScopes...)}, nil
 }

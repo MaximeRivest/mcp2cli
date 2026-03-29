@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
 )
 
 // Metadata stores cached MCP metadata for one server.

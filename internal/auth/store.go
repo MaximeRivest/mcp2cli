@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/99designs/keyring"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
 )
 
 // Token represents an access token stored for remote auth.
@@ -31,7 +31,7 @@ type Store struct {
 // NewStore creates a token store using repository paths.
 func NewStore(paths config.Paths) *Store {
 	store := &Store{fileDir: paths.TokenDir}
-	if os.Getenv("MCP2CLI_USE_SYSTEM_KEYRING") != "1" {
+	if os.Getenv("MCPTOCLI_USE_SYSTEM_KEYRING") != "1" {
 		return store
 	}
 	type result struct {
@@ -40,7 +40,7 @@ func NewStore(paths config.Paths) *Store {
 	}
 	ch := make(chan result, 1)
 	go func() {
-		kr, err := keyring.Open(keyring.Config{ServiceName: "mcp2cli", FileDir: paths.TokenDir})
+		kr, err := keyring.Open(keyring.Config{ServiceName: "mcptocli", FileDir: paths.TokenDir})
 		ch <- result{keyring: kr, err: err}
 	}()
 	select {

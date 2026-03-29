@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/maximerivest/mcp2cli/internal/app"
-	"github.com/maximerivest/mcp2cli/internal/auth"
-	"github.com/maximerivest/mcp2cli/internal/cache"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/app"
+	"github.com/maximerivest/mcptocli/internal/auth"
+	"github.com/maximerivest/mcptocli/internal/cache"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
 )
 
 // Options configures the CLI.
@@ -65,11 +65,11 @@ func (s *State) BoundServer() (*config.Server, error) {
 
 	name := s.Options.Invocation.ExposedCommandName
 
-	// Implicit bind: "mcp2cli weather ..." — resolve by server name directly
+	// Implicit bind: "mcptocli weather ..." — resolve by server name directly
 	if s.Options.Invocation.ImplicitBind {
 		server, err := repo.ResolveServer(name)
 		if err != nil {
-			return nil, exitcode.WithHint(exitcode.Wrapf(exitcode.Config, err, "server %q not found", name), "run `mcp2cli ls`")
+			return nil, exitcode.WithHint(exitcode.Wrapf(exitcode.Config, err, "server %q not found", name), "run `mcptocli ls`")
 		}
 		return server, nil
 	}
@@ -77,7 +77,7 @@ func (s *State) BoundServer() (*config.Server, error) {
 	// Exposed command: "mcp-weather ..." or "wea ..." — resolve by exposed name
 	server, err := repo.ResolveExposedCommand(name)
 	if err != nil {
-		return nil, exitcode.WithHint(exitcode.Wrapf(exitcode.Config, err, "exposed command %q is not registered", name), "run `mcp2cli ls`")
+		return nil, exitcode.WithHint(exitcode.Wrapf(exitcode.Config, err, "exposed command %q is not registered", name), "run `mcptocli ls`")
 	}
 	return server, nil
 }

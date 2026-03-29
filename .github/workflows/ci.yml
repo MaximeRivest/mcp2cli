@@ -24,4 +24,4 @@ jobs:
         run: go test ./...
 
       - name: Build
-        run: go build ./cmd/mcp2cli
+        run: go build ./cmd/mcptocli

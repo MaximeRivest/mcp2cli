@@ -24,7 +24,7 @@ const (
 
 var commandNamePattern = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
 
-// Paths contains the filesystem paths used by mcp2cli.
+// Paths contains the filesystem paths used by mcptocli.
 type Paths struct {
 	GlobalConfig     string
 	LocalConfig      string
@@ -84,11 +84,11 @@ func DefaultPaths(cwd string) (Paths, error) {
 	}
 
 	return Paths{
-		GlobalConfig:     filepath.Join(xdg.ConfigHome, "mcp2cli", "config.yaml"),
-		LocalConfig:      filepath.Join(cwd, ".mcp2cli.yaml"),
-		ExposeBinDir:     filepath.Join(xdg.DataHome, "mcp2cli", "bin"),
-		TokenDir:         filepath.Join(xdg.DataHome, "mcp2cli", "tokens"),
-		MetadataCacheDir: filepath.Join(xdg.CacheHome, "mcp2cli", "metadata"),
+		GlobalConfig:     filepath.Join(xdg.ConfigHome, "mcptocli", "config.yaml"),
+		LocalConfig:      filepath.Join(cwd, ".mcptocli.yaml"),
+		ExposeBinDir:     filepath.Join(xdg.DataHome, "mcptocli", "bin"),
+		TokenDir:         filepath.Join(xdg.DataHome, "mcptocli", "tokens"),
+		MetadataCacheDir: filepath.Join(xdg.CacheHome, "mcptocli", "metadata"),
 	}, nil
 }
 
@@ -382,8 +382,8 @@ func NormalizeCommandName(name string) (string, error) {
 	if !commandNamePattern.MatchString(name) {
 		return "", fmt.Errorf("invalid name %q: use lowercase letters, numbers, and dashes only", name)
 	}
-	if name == "mcp2cli" {
-		return "", errors.New("name \"mcp2cli\" is reserved")
+	if name == "mcptocli" {
+		return "", errors.New("name \"mcptocli\" is reserved")
 	}
 
 	return name, nil

@@ -1,7 +1,7 @@
 // Package types provides MCP type aliases bridging to mcp-go.
 //
 // All MCP protocol types are now provided by github.com/mark3labs/mcp-go/mcp.
-// This package re-exports the subset used by mcp2cli, so existing code
+// This package re-exports the subset used by mcptocli, so existing code
 // compiles with minimal changes. New code should import mcp-go directly.
 package types
 

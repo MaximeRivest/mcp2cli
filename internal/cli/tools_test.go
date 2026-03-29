@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/app"
-	"github.com/maximerivest/mcp2cli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/app"
+	"github.com/maximerivest/mcptocli/internal/config"
 )
 
 func TestToolsCommandWithRegisteredStdioServer(t *testing.T) {
@@ -25,7 +25,7 @@ func TestToolsCommandWithRegisteredStdioServer(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -56,7 +56,7 @@ func TestToolCommandWithInput(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -86,7 +86,7 @@ func TestToolCommandWithElicitation(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -117,7 +117,7 @@ func TestToolCommandWithElicitationRequiresInteractiveInput(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -150,7 +150,7 @@ func TestToolCommandWithSchemaFlagsAndPositionals(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -167,7 +167,7 @@ func TestToolCommandWithSchemaFlagsAndPositionals(t *testing.T) {
 		t.Fatalf("unexpected JSON output: %s", stdout.String())
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -197,7 +197,7 @@ func TestToolsInspectOutput(t *testing.T) {
 		t.Fatalf("UpsertServer: %v", err)
 	}
 
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -219,7 +219,7 @@ func TestToolsInspectOutput(t *testing.T) {
 }
 
 func TestDirectCommandMode(t *testing.T) {
-	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err := NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}
@@ -236,7 +236,7 @@ func TestDirectCommandMode(t *testing.T) {
 		t.Fatalf("unexpected direct tools output: %s", stdout.String())
 	}
 
-	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	root, err = NewRootCommand(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("NewRootCommand: %v", err)
 	}

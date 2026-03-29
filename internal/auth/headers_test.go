@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/config"
 )
 
 func TestHeadersForServerBearerEnv(t *testing.T) {

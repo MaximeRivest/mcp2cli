@@ -7,7 +7,7 @@ test:
 	go test ./...
 
 build:
-	go build -o bin/mcp2cli ./cmd/mcp2cli
+	go build -o bin/mcptocli ./cmd/mcptocli
 
 tidy:
 	go mod tidy

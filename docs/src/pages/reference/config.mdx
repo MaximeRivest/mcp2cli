@@ -1,14 +1,17 @@
 ---
+layout: ../../layouts/DocsLayout.astro
 title: Configuration
 description: Config files and how servers are stored
 ---
 
+# Configuration
+
 ## Config files
 
-mcp2cli stores server definitions in YAML config files:
+mcptocli stores server definitions in YAML config files:
 
-- **Global:** `~/.config/mcp2cli/config.yaml`
-- **Per-project:** `.mcp2cli.yaml` in any directory (use `--local` flag with `add`)
+- **Global:** `~/.config/mcptocli/config.yaml`
+- **Per-project:** `.mcptocli.yaml` in any directory (use `--local` flag with `add`)
 
 Per-project config is found by walking up from the current directory.
 
@@ -41,7 +44,7 @@ servers:
 
 ## Data directory
 
-mcp2cli stores runtime data in `~/.local/share/mcp2cli/`:
+mcptocli stores runtime data in `~/.local/share/mcptocli/`:
 
 - `bin/` — exposed command shims
 - `cache/` — metadata cache (tools, resources, prompts) for fast completions

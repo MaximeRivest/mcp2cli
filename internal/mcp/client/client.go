@@ -1,8 +1,8 @@
-// Package client wraps mcp-go's client for mcp2cli.
+// Package client wraps mcp-go's client for mcptocli.
 //
 // All MCP protocol handling is delegated to github.com/mark3labs/mcp-go/client.
 // This package provides the Session interface and Connect functions that
-// mcp2cli's CLI code expects, adapting mcp-go's types as needed.
+// mcptocli's CLI code expects, adapting mcp-go's types as needed.
 package client
 
 import (
@@ -19,9 +19,9 @@ import (
 	"github.com/mark3labs/mcp-go/client/transport"
 	"github.com/mark3labs/mcp-go/mcp"
 
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
 )
 
 // Session is the interface used by CLI commands to talk to MCP servers.
@@ -158,7 +158,7 @@ func (s *session) initialize(ctx context.Context) error {
 	initReq := mcp.InitializeRequest{}
 	initReq.Params.ProtocolVersion = mcp.LATEST_PROTOCOL_VERSION
 	initReq.Params.ClientInfo = mcp.Implementation{
-		Name:    "mcp2cli",
+		Name:    "mcptocli",
 		Version: "dev",
 	}
 

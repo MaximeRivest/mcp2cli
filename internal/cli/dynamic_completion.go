@@ -4,11 +4,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/cache"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/naming"
-	"github.com/maximerivest/mcp2cli/internal/schema/inspect"
-	"github.com/maximerivest/mcp2cli/internal/serverref"
+	"github.com/maximerivest/mcptocli/internal/cache"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/schema/inspect"
+	"github.com/maximerivest/mcptocli/internal/serverref"
 	"github.com/spf13/cobra"
 )
 

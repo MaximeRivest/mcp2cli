@@ -9,7 +9,7 @@ func TestRepositoryLoadMergedLocalOverridesGlobal(t *testing.T) {
 	tempDir := t.TempDir()
 	repo := NewRepositoryWithPaths(Paths{
 		GlobalConfig: filepath.Join(tempDir, "global.yaml"),
-		LocalConfig:  filepath.Join(tempDir, ".mcp2cli.yaml"),
+		LocalConfig:  filepath.Join(tempDir, ".mcptocli.yaml"),
 		ExposeBinDir: filepath.Join(tempDir, "bin"),
 	})
 
@@ -41,7 +41,7 @@ func TestExposeUsesFullCommandName(t *testing.T) {
 	tempDir := t.TempDir()
 	repo := NewRepositoryWithPaths(Paths{
 		GlobalConfig: filepath.Join(tempDir, "global.yaml"),
-		LocalConfig:  filepath.Join(tempDir, ".mcp2cli.yaml"),
+		LocalConfig:  filepath.Join(tempDir, ".mcptocli.yaml"),
 		ExposeBinDir: filepath.Join(tempDir, "bin"),
 	})
 

@@ -1,0 +1,46 @@
+---
+layout: ../layouts/DocsLayout.astro
+title: Installation
+description: Install mcptocli on macOS, Linux, or Windows
+---
+
+# Installation
+
+## macOS and Linux
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/MaximeRivest/mcptocli/main/install.sh | sh
+```
+
+This downloads the right binary, installs it, sets up shell completions, and creates <span style="white-space: nowrap;">an <code>mcp</code> alias</span> if available.
+
+## Windows
+
+```powershell
+irm https://raw.githubusercontent.com/MaximeRivest/mcptocli/main/install.ps1 | iex
+```
+
+## Verify
+
+Open a **new** terminal and run:
+
+```bash
+mcptocli version
+```
+
+If the <span style="white-space: nowrap;"><code>mcp</code> alias</span> was installed, you can also use:
+
+```bash
+mcp version
+```
+
+> **Tip:** All examples in this documentation use `mcp` for brevity. If `mcp` is taken on your system, substitute `mcptocli`.
+
+## Build from source
+
+```bash
+git clone https://github.com/MaximeRivest/mcptocli.git
+cd mcptocli
+go build -o mcptocli ./cmd/mcptocli
+./mcptocli version
+```

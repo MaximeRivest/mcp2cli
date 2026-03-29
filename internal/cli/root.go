@@ -21,7 +21,7 @@ func NewRootCommand(opts Options) (*cobra.Command, error) {
 
 	use := opts.Invocation.ProgramName
 	if use == "" {
-		use = "mcp2cli"
+		use = "mcptocli"
 	}
 	short := "Turn any MCP server into a CLI"
 	long := fmt.Sprintf(`%s turns MCP servers into delightful command-line tools.
@@ -33,7 +33,7 @@ Quick start:
 	if opts.Invocation.IsExposedCommand() {
 		use = opts.Invocation.ExposedCommandName
 		short = fmt.Sprintf("Bound CLI for exposed command %q", opts.Invocation.ExposedCommandName)
-		long = fmt.Sprintf(`%s is an exposed mcp2cli command bound to a registered MCP server.
+		long = fmt.Sprintf(`%s is an exposed mcptocli command bound to a registered MCP server.
 
 Quick start:
   %s tools

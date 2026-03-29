@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
 )
 
 func TestInspectToolPreservesPropertyOrder(t *testing.T) {

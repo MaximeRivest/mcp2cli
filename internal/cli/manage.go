@@ -7,9 +7,9 @@ import (
 	"text/tabwriter"
 
 	"github.com/adrg/xdg"
-	"github.com/maximerivest/mcp2cli/internal/config"
-	"github.com/maximerivest/mcp2cli/internal/daemon"
-	"github.com/maximerivest/mcp2cli/internal/expose"
+	"github.com/maximerivest/mcptocli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/daemon"
+	"github.com/maximerivest/mcptocli/internal/expose"
 	"github.com/spf13/cobra"
 )
 
@@ -33,13 +33,13 @@ func newAddCommand(state *State) *cobra.Command {
 The second argument is the command to start a local server, or a URL for a remote one.
 URLs (starting with http:// or https://) are detected automatically.`,
 		Example: `  # Local server (started on demand)
-  mcp2cli add time 'uvx mcp-server-time'
+  mcptocli add time 'uvx mcp-server-time'
 
   # Remote server with OAuth
-  mcp2cli add notion https://mcp.notion.com/mcp --auth oauth
+  mcptocli add notion https://mcp.notion.com/mcp --auth oauth
 
   # Remote server with bearer token
-  mcp2cli add acme https://api.acme.dev/mcp --bearer-env ACME_TOKEN`,
+  mcptocli add acme https://api.acme.dev/mcp --bearer-env ACME_TOKEN`,
 		Args: cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			name, err := config.NormalizeCommandName(args[0])
@@ -62,7 +62,7 @@ URLs (starting with http:// or https://) are detected automatically.`,
 			}
 
 			if command == "" && url == "" {
-				return fmt.Errorf("usage: mcp2cli add <name> <command-or-url>")
+				return fmt.Errorf("usage: mcptocli add <name> <command-or-url>")
 			}
 			if command != "" && url != "" {
 				return fmt.Errorf("--command and --url are mutually exclusive")
@@ -112,7 +112,7 @@ URLs (starting with http:// or https://) are detected automatically.`,
 
 			progName := state.Options.Invocation.ProgramName
 			if progName == "" {
-				progName = "mcp2cli"
+				progName = "mcptocli"
 			}
 			fmt.Fprintf(cmd.OutOrStdout(), "\nnow use it:\n  %s %s tools\n  %s %s shell\n", progName, name, progName, name)
 			return nil
@@ -124,7 +124,7 @@ URLs (starting with http:// or https://) are detected automatically.`,
 	cmd.Flags().StringVar(&auth, "auth", "", "Auth mode (e.g. oauth)")
 	cmd.Flags().StringVar(&bearerEnv, "bearer-env", "", "Env var containing a bearer token")
 	cmd.Flags().StringSliceVar(&roots, "root", nil, "Root path (repeatable)")
-	cmd.Flags().BoolVar(&local, "local", false, "Write to .mcp2cli.yaml instead of global config")
+	cmd.Flags().BoolVar(&local, "local", false, "Write to .mcptocli.yaml instead of global config")
 	cmd.Flags().StringVar(&as, "as", "", "Custom exposed command name")
 	cmd.Flags().BoolVar(&noExpose, "no-expose", false, "Skip creating an exposed command")
 	return cmd
@@ -204,18 +204,18 @@ func newExposeCommand(state *State) *cobra.Command {
 		Short: "Make a server available as its own command (e.g. mcp-time)",
 		Long: `Create (or remove) a standalone command for a server.
 
-After exposing, you can use the server directly without the mcp2cli prefix.
+After exposing, you can use the server directly without the mcptocli prefix.
 For example, exposing "time" creates "mcp-time" so you can run:
   mcp-time tools
   mcp-time get-current-time --timezone UTC`,
 		Example: `  # Create mcp-time command
-  mcp2cli expose time
+  mcptocli expose time
 
   # Create with a custom name
-  mcp2cli expose time --as worldclock
+  mcptocli expose time --as worldclock
 
   # Remove the exposed command
-  mcp2cli expose --remove time`,
+  mcptocli expose --remove time`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			repo, err := state.Repo()

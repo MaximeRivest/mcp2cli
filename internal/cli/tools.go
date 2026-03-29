@@ -10,15 +10,15 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/auth"
-	"github.com/maximerivest/mcp2cli/internal/cache"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/invoke"
-	mcpclient "github.com/maximerivest/mcp2cli/internal/mcp/client"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/naming"
-	"github.com/maximerivest/mcp2cli/internal/schema/inspect"
-	"github.com/maximerivest/mcp2cli/internal/serverref"
+	"github.com/maximerivest/mcptocli/internal/auth"
+	"github.com/maximerivest/mcptocli/internal/cache"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/invoke"
+	mcpclient "github.com/maximerivest/mcptocli/internal/mcp/client"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/schema/inspect"
+	"github.com/maximerivest/mcptocli/internal/serverref"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )
@@ -48,16 +48,16 @@ func newToolsCommand(state *State) *cobra.Command {
 Without a tool name, shows a table of all available tools.
 With a tool name, shows the full usage, arguments, and types.`,
 		Example: `  # List all tools on a registered server
-  mcp2cli tools weather
+  mcptocli tools weather
 
   # Inspect a specific tool
-  mcp2cli tools weather get-forecast
+  mcptocli tools weather get-forecast
 
   # List tools on a one-off server
-  mcp2cli tools --url https://mcp.example.com/sse
+  mcptocli tools --url https://mcp.example.com/sse
 
   # Output as JSON
-  mcp2cli tools weather -o json`,
+  mcptocli tools weather -o json`,
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return metadataToolsCompletion(state, cmd, args, toComplete)
 		},
@@ -637,14 +637,14 @@ func toolUsagePrefix(state *State, resolved *serverref.Resolved) string {
 	if resolved != nil && resolved.Server != nil {
 		switch {
 		case resolved.Server.Source == "ephemeral" && resolved.Server.Command != "":
-			return fmt.Sprintf("mcp2cli tool --command %s", resolved.Server.Command)
+			return fmt.Sprintf("mcptocli tool --command %s", resolved.Server.Command)
 		case resolved.Server.Source == "ephemeral" && resolved.Server.URL != "":
-			return fmt.Sprintf("mcp2cli tool --url %s", resolved.Server.URL)
+			return fmt.Sprintf("mcptocli tool --url %s", resolved.Server.URL)
 		case resolved.Server.Name != "":
-			return fmt.Sprintf("mcp2cli tool %s", resolved.Server.Name)
+			return fmt.Sprintf("mcptocli tool %s", resolved.Server.Name)
 		}
 	}
-	return "mcp2cli tool"
+	return "mcptocli tool"
 }
 
 // toolsListHints returns the footer hints for the tools listing.
@@ -656,11 +656,11 @@ func toolsListHints(state *State, resolved *serverref.Resolved) string {
 	if resolved != nil && resolved.Server != nil {
 		switch {
 		case resolved.Server.Source == "ephemeral" && resolved.Server.Command != "":
-			return fmt.Sprintf("Inspect:  mcp2cli tools --command %s <tool>\nInvoke:   mcp2cli tool --command %s <tool> [args...]", resolved.Server.Command, resolved.Server.Command)
+			return fmt.Sprintf("Inspect:  mcptocli tools --command %s <tool>\nInvoke:   mcptocli tool --command %s <tool> [args...]", resolved.Server.Command, resolved.Server.Command)
 		case resolved.Server.Source == "ephemeral" && resolved.Server.URL != "":
-			return fmt.Sprintf("Inspect:  mcp2cli tools --url %s <tool>\nInvoke:   mcp2cli tool --url %s <tool> [args...]", resolved.Server.URL, resolved.Server.URL)
+			return fmt.Sprintf("Inspect:  mcptocli tools --url %s <tool>\nInvoke:   mcptocli tool --url %s <tool> [args...]", resolved.Server.URL, resolved.Server.URL)
 		case resolved.Server.Name != "":
-			return fmt.Sprintf("Inspect:  mcp2cli tools %s <tool>\nInvoke:   mcp2cli %s <tool> [args...]", resolved.Server.Name, resolved.Server.Name)
+			return fmt.Sprintf("Inspect:  mcptocli tools %s <tool>\nInvoke:   mcptocli %s <tool> [args...]", resolved.Server.Name, resolved.Server.Name)
 		}
 	}
 	return ""
@@ -779,11 +779,11 @@ func toolsListHint(state *State, resolved *serverref.Resolved) string {
 	}
 	switch {
 	case resolved.Server.Source == "ephemeral" && resolved.Server.Command != "":
-		return fmt.Sprintf("run `mcp2cli tools --command %q`", resolved.Server.Command)
+		return fmt.Sprintf("run `mcptocli tools --command %q`", resolved.Server.Command)
 	case resolved.Server.Source == "ephemeral" && resolved.Server.URL != "":
-		return fmt.Sprintf("run `mcp2cli tools --url %q`", resolved.Server.URL)
+		return fmt.Sprintf("run `mcptocli tools --url %q`", resolved.Server.URL)
 	case resolved.Server.Name != "":
-		return fmt.Sprintf("run `mcp2cli tools %s`", resolved.Server.Name)
+		return fmt.Sprintf("run `mcptocli tools %s`", resolved.Server.Name)
 	default:
 		return ""
 	}
@@ -799,11 +799,11 @@ func toolsInspectHint(state *State, resolved *serverref.Resolved, toolName strin
 	}
 	switch {
 	case resolved.Server.Source == "ephemeral" && resolved.Server.Command != "":
-		return fmt.Sprintf("run `mcp2cli tools --command %q %s`", resolved.Server.Command, toolName)
+		return fmt.Sprintf("run `mcptocli tools --command %q %s`", resolved.Server.Command, toolName)
 	case resolved.Server.Source == "ephemeral" && resolved.Server.URL != "":
-		return fmt.Sprintf("run `mcp2cli tools --url %q %s`", resolved.Server.URL, toolName)
+		return fmt.Sprintf("run `mcptocli tools --url %q %s`", resolved.Server.URL, toolName)
 	case resolved.Server.Name != "":
-		return fmt.Sprintf("run `mcp2cli tools %s %s`", resolved.Server.Name, toolName)
+		return fmt.Sprintf("run `mcptocli tools %s %s`", resolved.Server.Name, toolName)
 	default:
 		return ""
 	}

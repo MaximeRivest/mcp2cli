@@ -12,10 +12,10 @@ import (
 	"time"
 
 	"github.com/kballard/go-shellquote"
-	"github.com/maximerivest/mcp2cli/internal/auth"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	mcpclient "github.com/maximerivest/mcp2cli/internal/mcp/client"
-	"github.com/maximerivest/mcp2cli/internal/serverref"
+	"github.com/maximerivest/mcptocli/internal/auth"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	mcpclient "github.com/maximerivest/mcptocli/internal/mcp/client"
+	"github.com/maximerivest/mcptocli/internal/serverref"
 	"github.com/spf13/cobra"
 )
 
@@ -50,10 +50,10 @@ validation, authentication, transport handshake, and tool listing.
 
 Each check is reported as ok or fail with a detail message.`,
 		Example: `  # Check a registered server
-  mcp2cli doctor weather
+  mcptocli doctor weather
 
   # Check a one-off remote server
-  mcp2cli doctor --url https://mcp.example.com/sse`,
+  mcptocli doctor --url https://mcp.example.com/sse`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			outputMode, err := normalizeOutputMode(output)
 			if err != nil {

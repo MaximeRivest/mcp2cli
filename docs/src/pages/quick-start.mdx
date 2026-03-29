@@ -1,0 +1,77 @@
+---
+layout: ../layouts/DocsLayout.astro
+title: Quick Start
+description: Get up and running in 30 seconds
+---
+
+# Quick Start
+
+Two steps: **add** a server once, then **use** it by name.
+
+## Step 1: Add a server
+
+```bash frame="terminal" title="Terminal"
+mcp add time 'uvx mcp-server-time'
+```
+
+```text
+added server "time"
+exposed as "mcp-time" (~/.local/share/mcptocli/bin/mcp-time)
+
+now use it:
+  mcp time tools
+  mcp time shell
+```
+
+The second argument is the command to start the server. URLs are detected automatically:
+
+```bash frame="terminal" title="Terminal"
+mcp add notion https://mcp.notion.com/mcp --auth oauth
+```
+
+## Step 2: Use it
+
+```bash frame="terminal" title="Terminal"
+mcp time tools
+```
+
+```text
+Tools (2):
+
+  convert-time      Convert time between timezones.
+  get-current-time  Get current time in a specific timezone.
+
+Inspect:  mcp tools time <tool>
+Invoke:   mcp time <tool> [args...]
+```
+
+```bash frame="terminal" title="Terminal"
+mcp time get-current-time --timezone 'America/New_York'
+```
+
+```text
+2025-03-29T10:30:00-04:00
+```
+
+The server name **is** the command. Just the server name followed by what you want to do.
+
+## What next?
+
+<div class="not-prose mt-4 grid gap-3 sm:grid-cols-2">
+  <a href="/mcptocli/guides/tools" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Using Tools →</div>
+    <div class="mt-1 text-sm text-slate-500">Inspect schemas, positional args, one-off use</div>
+  </a>
+  <a href="/mcptocli/guides/remote" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Remote Servers →</div>
+    <div class="mt-1 text-sm text-slate-500">OAuth and bearer token authentication</div>
+  </a>
+  <a href="/mcptocli/guides/background" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Background Mode →</div>
+    <div class="mt-1 text-sm text-slate-500">Keep servers running for instant responses</div>
+  </a>
+  <a href="/mcptocli/guides/shell" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Interactive Shell →</div>
+    <div class="mt-1 text-sm text-slate-500">Explore servers with tab completion and history</div>
+  </a>
+</div>

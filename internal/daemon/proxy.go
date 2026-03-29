@@ -22,7 +22,7 @@ import (
 
 // Paths returns the socket and pid file paths for a server.
 func Paths(dataDir, serverName string) (socketPath, pidPath string) {
-	dir := filepath.Join(dataDir, "mcp2cli", "daemons")
+	dir := filepath.Join(dataDir, "mcptocli", "daemons")
 	return filepath.Join(dir, serverName+".sock"), filepath.Join(dir, serverName+".pid")
 }
 
@@ -90,7 +90,7 @@ func Run(ctx context.Context, command, dataDir, serverName string) error {
 	// Initialize handshake
 	initReq := mcp.InitializeRequest{}
 	initReq.Params.ProtocolVersion = mcp.LATEST_PROTOCOL_VERSION
-	initReq.Params.ClientInfo = mcp.Implementation{Name: "mcp2cli-daemon", Version: "dev"}
+	initReq.Params.ClientInfo = mcp.Implementation{Name: "mcptocli-daemon", Version: "dev"}
 
 	initResult, err := mcpClient.Initialize(ctx, initReq)
 	if err != nil {
@@ -193,7 +193,7 @@ func Run(ctx context.Context, command, dataDir, serverName string) error {
 
 // SharedPaths returns the URL file and pid file paths for a shared (HTTP) server.
 func SharedPaths(dataDir, serverName string) (urlPath, pidPath string) {
-	dir := filepath.Join(dataDir, "mcp2cli", "daemons")
+	dir := filepath.Join(dataDir, "mcptocli", "daemons")
 	return filepath.Join(dir, serverName+".url"), filepath.Join(dir, serverName+".pid")
 }
 

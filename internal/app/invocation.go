@@ -13,14 +13,14 @@ type Invocation struct {
 	ImplicitBind       bool // true when server name used as first arg, not via exposed shim
 }
 
-// DetectInvocation determines whether the binary was invoked as mcp2cli or as
+// DetectInvocation determines whether the binary was invoked as mcptocli or as
 // an exposed command like mcp-weather or wea.
 func DetectInvocation(argv0 string) Invocation {
 	base := filepath.Base(argv0)
 	base = stripExecutableSuffix(base)
 
 	invocation := Invocation{ProgramName: base}
-	if base == "" || base == "mcp2cli" || base == "mcp" {
+	if base == "" || base == "mcptocli" || base == "mcp" {
 		return invocation
 	}
 
@@ -68,7 +68,7 @@ func IsReservedExposedCommand(name string) bool {
 	}
 }
 
-// IsKnownRootCommand reports whether a name is a built-in mcp2cli subcommand.
+// IsKnownRootCommand reports whether a name is a built-in mcptocli subcommand.
 func IsKnownRootCommand(name string) bool {
 	switch name {
 	case "help", "completion", "version", "add", "ls", "rm", "expose",

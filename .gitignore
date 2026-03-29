@@ -1,5 +1,5 @@
 # Binaries
-mcp2cli
+mcptocli
 bin/
 dist/
 *.exe

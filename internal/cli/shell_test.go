@@ -10,15 +10,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/app"
-	"github.com/maximerivest/mcp2cli/internal/config"
+	"github.com/maximerivest/mcptocli/internal/app"
+	"github.com/maximerivest/mcptocli/internal/config"
 )
 
 func TestDispatchShellLine(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(t.TempDir(), "config"))
 	t.Setenv("XDG_DATA_HOME", filepath.Join(t.TempDir(), "data"))
 
-	state, err := newState(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcp2cli"}})
+	state, err := newState(Options{Version: "dev", Invocation: app.Invocation{ProgramName: "mcptocli"}})
 	if err != nil {
 		t.Fatalf("newState: %v", err)
 	}

@@ -1,11 +1,11 @@
 version: 2
 
-project_name: mcp2cli
+project_name: mcptocli
 
 builds:
-  - id: mcp2cli
-    main: ./cmd/mcp2cli
-    binary: mcp2cli
+  - id: mcptocli
+    main: ./cmd/mcptocli
+    binary: mcptocli
     env:
       - CGO_ENABLED=0
     ldflags:

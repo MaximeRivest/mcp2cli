@@ -1,14 +1,14 @@
 $ErrorActionPreference = "Stop"
 
-$repo = "MaximeRivest/mcp2cli"
-$asset = "mcp2cli-windows-amd64.exe"
+$repo = "MaximeRivest/mcptocli"
+$asset = "mcptocli-windows-amd64.exe"
 $url = "https://github.com/$repo/releases/latest/download/$asset"
 $installDir = "$env:USERPROFILE\bin"
-$binary = "$installDir\mcp2cli.exe"
+$binary = "$installDir\mcptocli.exe"
 
 # ── download ─────────────────────────────────────────────────────────────────
 
-Write-Host "Downloading mcp2cli..."
+Write-Host "Downloading mcptocli..."
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 Invoke-WebRequest -Uri $url -OutFile $binary
 
@@ -25,10 +25,10 @@ if ($currentPath -notlike "*$installDir*") {
 
 $version = & $binary version 2>$null | Select-Object -First 1
 Write-Host ""
-Write-Host "✓ mcp2cli $version"
+Write-Host "✓ mcptocli $version"
 Write-Host ""
 Write-Host "Get started:"
-Write-Host "  mcp2cli add time 'uvx mcp-server-time'"
-Write-Host "  mcp2cli time tools"
+Write-Host "  mcptocli add time 'uvx mcp-server-time'"
+Write-Host "  mcptocli time tools"
 Write-Host ""
 Write-Host "Open a new terminal for PATH changes to take effect."

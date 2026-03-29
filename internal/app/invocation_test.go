@@ -7,9 +7,9 @@ func TestDetectInvocation(t *testing.T) {
 		argv0   string
 		exposed string
 	}{
-		{argv0: "/usr/local/bin/mcp2cli", exposed: ""},
-		{argv0: "/home/maxime/.local/share/mcp2cli/bin/mcp-weather", exposed: "mcp-weather"},
-		{argv0: "/home/maxime/.local/share/mcp2cli/bin/wea", exposed: "wea"},
+		{argv0: "/usr/local/bin/mcptocli", exposed: ""},
+		{argv0: "/home/maxime/.local/share/mcptocli/bin/mcp-weather", exposed: "mcp-weather"},
+		{argv0: "/home/maxime/.local/share/mcptocli/bin/wea", exposed: "wea"},
 	}
 
 	for _, tt := range tests {

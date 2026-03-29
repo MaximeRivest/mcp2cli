@@ -1,9 +1,12 @@
 ---
+layout: ../../layouts/DocsLayout.astro
 title: Exposed Commands
 description: Use MCP servers as standalone commands
 ---
 
-When you add a server, `mcp2cli` automatically creates a standalone command for it on your PATH.
+# Exposed Commands
+
+When you add a server, `mcptocli` automatically creates a standalone command for it on your PATH.
 
 ## Automatic exposure
 
@@ -38,12 +41,12 @@ mcp expose --remove time
 
 ## How it works
 
-Exposed commands are small shims placed in `~/.local/share/mcp2cli/bin/`. When invoked, they call `mcp2cli` with the correct server binding.
+Exposed commands are small shims placed in `~/.local/share/mcptocli/bin/`. When invoked, they call `mcptocli` with the correct server binding.
 
 Make sure the bin directory is on your PATH:
 
 ```bash
-export PATH="$HOME/.local/share/mcp2cli/bin:$PATH"
+export PATH="$HOME/.local/share/mcptocli/bin:$PATH"
 ```
 
 The `add` command prints the path when it creates the shim.

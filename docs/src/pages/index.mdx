@@ -1,0 +1,120 @@
+---
+layout: ../layouts/DocsLayout.astro
+title: mcptocli
+description: Turn any MCP server into a CLI
+landingTitle: mcptocli
+showToc: false
+---
+
+If a service has an MCP server, use it from your terminal — no SDK, no boilerplate, just commands.
+
+---
+
+<div class="not-prose mt-8 space-y-10">
+
+  <div>
+    <div class="mb-3">
+      <div class="text-lg font-semibold text-slate-900">1. Add a server</div>
+      <p class="mt-1 text-sm text-slate-500">Register any MCP server by name. One command, done forever.</p>
+    </div>
+
+```bash frame="terminal" title="Terminal"
+mcp add time 'uvx mcp-server-time'
+```
+
+```text
+added server "time"
+exposed as "mcp-time" (~/.local/share/mcptocli/bin/mcp-time)
+
+now use it:
+  mcp time tools
+  mcp time shell
+```
+
+  </div>
+
+  <div>
+    <div class="mb-3">
+      <div class="text-lg font-semibold text-slate-900">2. See what it can do</div>
+      <p class="mt-1 text-sm text-slate-500">Every server describes its tools. Inspect any of them to get flags, types, and usage.</p>
+    </div>
+
+```bash frame="terminal" title="Terminal"
+mcp time tools
+```
+
+```text
+Tools (2):
+
+  convert-time      Convert time between timezones.
+  get-current-time  Get current time in a specific timezone.
+
+Inspect:  mcp tools time <tool>
+Invoke:   mcp time <tool> [args...]
+```
+
+  </div>
+
+  <div>
+    <div class="mb-3">
+      <div class="text-lg font-semibold text-slate-900">3. Use it</div>
+      <p class="mt-1 text-sm text-slate-500">Call any tool like a normal shell command. Flags are generated from the schema.</p>
+    </div>
+
+```bash frame="terminal" title="Terminal"
+mcp time get-current-time --timezone America/New_York
+```
+
+```text
+2025-03-29T10:30:00-04:00
+```
+
+  </div>
+
+</div>
+
+---
+
+## Why mcptocli
+
+<div class="not-prose mt-6 grid gap-4 sm:grid-cols-2">
+  <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-2 text-lg font-semibold text-slate-900">Add once, use forever</div>
+    <p class="text-sm leading-relaxed text-slate-500">Register an MCP server by name. It becomes a first-class shell command — with flags, help, and tab completion generated from the schema.</p>
+  </div>
+  <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-2 text-lg font-semibold text-slate-900">Works with any MCP server</div>
+    <p class="text-sm leading-relaxed text-slate-500">Local stdio servers, remote HTTP endpoints, OAuth-protected services — mcptocli handles the transport so you don't have to.</p>
+  </div>
+  <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-2 text-lg font-semibold text-slate-900">Background mode</div>
+    <p class="text-sm leading-relaxed text-slate-500">Keep servers running for instant responses. Share a single server across terminals, Claude Desktop, and notebooks.</p>
+  </div>
+  <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-2 text-lg font-semibold text-slate-900">Script-friendly</div>
+    <p class="text-sm leading-relaxed text-slate-500"><code>-o json</code> gives you stable, parseable output on stdout. Diagnostics go to stderr. Exit codes are meaningful.</p>
+  </div>
+</div>
+
+---
+
+## Get started
+
+<div class="not-prose mt-4 grid gap-3 sm:grid-cols-2">
+  <a href="/mcptocli/installation" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Installation →</div>
+    <div class="mt-1 text-sm text-slate-500">Install on macOS, Linux, or Windows in one command</div>
+  </a>
+  <a href="/mcptocli/quick-start" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Quick Start →</div>
+    <div class="mt-1 text-sm text-slate-500">Add your first server and call a tool in 30 seconds</div>
+  </a>
+  <a href="/mcptocli/guides/tools" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Using Tools →</div>
+    <div class="mt-1 text-sm text-slate-500">Discover, inspect, and call MCP tools</div>
+  </a>
+  <a href="/mcptocli/reference/commands" class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-400 hover:shadow-md">
+    <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600">Command Reference →</div>
+    <div class="mt-1 text-sm text-slate-500">Every command, flag, and option</div>
+  </a>
+</div>

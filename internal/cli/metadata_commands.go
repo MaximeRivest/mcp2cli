@@ -9,15 +9,15 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/auth"
-	"github.com/maximerivest/mcp2cli/internal/cache"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/invoke"
-	mcpclient "github.com/maximerivest/mcp2cli/internal/mcp/client"
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
-	"github.com/maximerivest/mcp2cli/internal/naming"
-	"github.com/maximerivest/mcp2cli/internal/schema/inspect"
-	"github.com/maximerivest/mcp2cli/internal/serverref"
+	"github.com/maximerivest/mcptocli/internal/auth"
+	"github.com/maximerivest/mcptocli/internal/cache"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/invoke"
+	mcpclient "github.com/maximerivest/mcptocli/internal/mcp/client"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/naming"
+	"github.com/maximerivest/mcptocli/internal/schema/inspect"
+	"github.com/maximerivest/mcptocli/internal/serverref"
 	"github.com/spf13/cobra"
 )
 
@@ -41,10 +41,10 @@ func newResourcesCommand(state *State) *cobra.Command {
 Without a resource name, shows a table of all available resources.
 With a resource name, shows the URI, MIME type, and description.`,
 		Example: `  # List all resources
-  mcp2cli resources my-server
+  mcptocli resources my-server
 
   # Inspect a specific resource
-  mcp2cli resources my-server config-file`,
+  mcptocli resources my-server config-file`,
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return metadataResourcesCompletion(state, cmd, args, toComplete)
 		},
@@ -100,10 +100,10 @@ func newResourceCommand(state *State) *cobra.Command {
 		Use:   "resource [server] <resource>",
 		Short: "Read a resource",
 		Example: `  # Read a resource
-  mcp2cli resource my-server config-file
+  mcptocli resource my-server config-file
 
   # Output as JSON
-  mcp2cli resource my-server config-file -o json`,
+  mcptocli resource my-server config-file -o json`,
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return metadataResourcesCompletion(state, cmd, args, toComplete)
 		},
@@ -163,10 +163,10 @@ func newPromptsCommand(state *State) *cobra.Command {
 Without a prompt name, shows a table of all available prompts.
 With a prompt name, shows the arguments and their types.`,
 		Example: `  # List all prompts
-  mcp2cli prompts my-server
+  mcptocli prompts my-server
 
   # Inspect a specific prompt
-  mcp2cli prompts my-server summarize`,
+  mcptocli prompts my-server summarize`,
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return metadataPromptsCompletion(state, cmd, args, toComplete)
 		},

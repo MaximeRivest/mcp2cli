@@ -1,4 +1,4 @@
-module github.com/maximerivest/mcp2cli
+module github.com/maximerivest/mcptocli
 
 go 1.24
 

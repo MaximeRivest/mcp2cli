@@ -3,7 +3,7 @@ package inspect
 import (
 	"testing"
 
-	"github.com/maximerivest/mcp2cli/internal/mcp/types"
+	"github.com/maximerivest/mcptocli/internal/mcp/types"
 )
 
 func TestInspectPrompt(t *testing.T) {

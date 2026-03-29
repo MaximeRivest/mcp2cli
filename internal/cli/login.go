@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/maximerivest/mcp2cli/internal/auth"
-	"github.com/maximerivest/mcp2cli/internal/exitcode"
-	"github.com/maximerivest/mcp2cli/internal/serverref"
+	"github.com/maximerivest/mcptocli/internal/auth"
+	"github.com/maximerivest/mcptocli/internal/exitcode"
+	"github.com/maximerivest/mcptocli/internal/serverref"
 	"github.com/spf13/cobra"
 )
 
@@ -34,10 +34,10 @@ func newLoginCommand(state *State) *cobra.Command {
 
 Useful for pre-authenticating before using tools, or refreshing tokens.`,
 		Example: `  # Login to an OAuth server
-  mcp2cli login notion
+  mcptocli login notion
 
   # Verify bearer token is available
-  mcp2cli login acme`,
+  mcptocli login acme`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			explicitServer := ""
 			if !state.Options.Invocation.IsExposedCommand() && command == "" && url == "" {
