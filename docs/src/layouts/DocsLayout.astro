@@ -3,7 +3,7 @@ import "../styles/global.css";
 import Navbar from "../components/Navbar.astro";
 
 const { frontmatter } = Astro.props;
-const title = frontmatter?.title ? `${frontmatter.title} — mcptocli` : "mcptocli";
+const title = frontmatter?.title ? `mcptocli | ${frontmatter.title}` : "mcptocli";
 const description = frontmatter?.description ?? "Turn any MCP server into a CLI";
 const showToc = frontmatter?.showToc ?? true;
 const landingTitle = frontmatter?.landingTitle ?? "";

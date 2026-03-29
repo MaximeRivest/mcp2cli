@@ -1,12 +1,18 @@
 ---
 layout: ../layouts/DocsLayout.astro
-title: mcptocli
-description: Turn any MCP server into a CLI
+title: Give Your AI the CLI Tools It Actually Understands
+description: Give your MCP servers a first-class CLI. Turn any Model Context Protocol tool into a type-safe terminal command in seconds.
 landingTitle: MCP to CLI
 showToc: false
 ---
 
-If a service has an MCP server, use it from your terminal — no SDK, no boilerplate, just commands.
+## Stop Wrestling with JSON. Give Your AI the CLI Tools It Actually Understands.
+
+Turn any MCP server (GitHub, Notion, Figma) into a native shell command in 30 seconds. Perfect for coding agents, terminal junkies, and automation scripts.
+
+AI coding agents struggle with complex JSON tool calling—but they write shell commands perfectly. `mcptocli` instantly converts verbose MCP servers into clean, scriptable CLI tools with auto-generated flags, standard I/O, and tab completion.
+
+Build better AI agents. Automate your workflow. Ditch the JSON wrappers.
 
 ---
 
@@ -14,7 +20,7 @@ If a service has an MCP server, use it from your terminal — no SDK, no boilerp
 
   <div>
     <div class="mb-3">
-      <div class="text-lg font-semibold text-slate-900">1. Add a server</div>
+      <div class="text-lg font-semibold text-slate-900">1. Register Once. Run Anywhere.</div>
       <p class="mt-1 text-sm text-slate-500">Register any MCP server by name. One command, done forever.</p>
     </div>
 
@@ -35,7 +41,7 @@ now use it:
 
   <div>
     <div class="mb-3">
-      <div class="text-lg font-semibold text-slate-900">2. See what it can do</div>
+      <div class="text-lg font-semibold text-slate-900">2. Auto-Generated Flags & Help.</div>
       <p class="mt-1 text-sm text-slate-500">Every server describes its tools. Inspect any of them to get flags, types, and usage.</p>
     </div>
 
@@ -87,11 +93,11 @@ mcp time get-current-time --timezone America/New_York
     <p class="text-sm leading-relaxed text-slate-500">Local stdio servers, remote HTTP endpoints, OAuth-protected services — mcptocli handles the transport so you don't have to.</p>
   </div>
   <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-    <div class="mb-2 text-lg font-semibold text-slate-900">Background mode</div>
+    <div class="mb-2 text-lg font-semibold text-slate-900">Zero-Latency Responses</div>
     <p class="text-sm leading-relaxed text-slate-500">Keep servers running for instant responses. Share a single server across terminals, Claude Desktop, and notebooks.</p>
   </div>
   <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-    <div class="mb-2 text-lg font-semibold text-slate-900">Script-friendly</div>
+    <div class="mb-2 text-lg font-semibold text-slate-900">Built for Unix Pipelines (stdout/stderr).</div>
     <p class="text-sm leading-relaxed text-slate-500"><code>-o json</code> gives you stable, parseable output on stdout. Diagnostics go to stderr. Exit codes are meaningful.</p>
   </div>
 </div>
