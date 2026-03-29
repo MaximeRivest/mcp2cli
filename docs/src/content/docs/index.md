@@ -10,15 +10,15 @@ template: splash
 </div>
 
 ```bash
-# add a server once
+# add a server once, use it forever
 mcp add time 'uvx mcp-server-time'
 
-# use it like any command
+# call tools like any shell command
 mcp time get-current-time --timezone America/New_York
 ```
 
 ```bash
-# discover what's available
+# discover what a server can do
 mcp time tools
 ```
 
@@ -27,10 +27,13 @@ Tools (2):
 
   convert-time      Convert time between timezones.
   get-current-time  Get current time in a specific timezone.
+
+Inspect:  mcp tools time <tool>
+Invoke:   mcp time <tool> [args...]
 ```
 
 ```bash
-# inspect a tool — flags are generated from the schema
+# flags, help, usage — all generated from the schema
 mcp time tools get-current-time
 ```
 
@@ -46,9 +49,9 @@ ARGS
 ```
 
 ```bash
-# keep it running for instant responses
+# keep a server running for instant responses
 mcp time up
 
-# share one server across terminals, Claude Desktop, notebooks
+# or share across terminals, Claude Desktop, notebooks
 mcp time up --share
 ```

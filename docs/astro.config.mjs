@@ -9,8 +9,9 @@ export default defineConfig({
       title: "mcp2cli",
       customCss: ["./src/styles/custom.css"],
       expressiveCode: {
+        themes: ["github-light"],
         styleOverrides: {
-          borderRadius: "8px",
+          borderRadius: "10px",
         },
         frames: {
           showCopyToClipboardButton: true,

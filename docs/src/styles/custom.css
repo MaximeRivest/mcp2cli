@@ -9,29 +9,36 @@
   --sl-font: 'Inter', system-ui, sans-serif;
   --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* Teal accent */
-  --sl-color-accent-low: #0d3d38;
-  --sl-color-accent: #0d9488;
-  --sl-color-accent-high: #ccfbf1;
+  /* Amber accent — matching OpenResponses warm palette */
+  --sl-color-accent-low: #451a03;
+  --sl-color-accent: #f59e0b;
+  --sl-color-accent-high: #fef3c7;
 
-  /* Warm paper */
-  --sl-color-bg: #fafaf9;
-  --sl-color-bg-nav: rgba(255, 255, 255, 0.85);
-  --sl-color-bg-sidebar: #fafaf9;
-  --sl-color-hairline-light: #e7e5e4;
-  --sl-color-hairline: #d6d3d1;
+  /* Slate-50 background like OpenResponses body */
+  --sl-color-bg: #f8fafc;
+  --sl-color-bg-nav: rgba(255, 255, 255, 0.8);
+  --sl-color-bg-sidebar: #f8fafc;
+  --sl-color-hairline-light: #e2e8f0;
+  --sl-color-hairline: #cbd5e1;
+
+  /* Slate text tones */
+  --sl-color-text: #0f172a;
+  --sl-color-text-accent: #f59e0b;
+
+  /* Content width */
+  --sl-content-width: 45rem;
 }
 
 :root[data-theme='dark'] {
-  --sl-color-accent-low: #042f2e;
-  --sl-color-accent: #2dd4bf;
-  --sl-color-accent-high: #ccfbf1;
+  --sl-color-accent-low: #451a03;
+  --sl-color-accent: #f59e0b;
+  --sl-color-accent-high: #fef3c7;
 
-  --sl-color-bg: #0c0a09;
-  --sl-color-bg-nav: rgba(12, 10, 9, 0.85);
-  --sl-color-bg-sidebar: #0c0a09;
-  --sl-color-hairline-light: #292524;
-  --sl-color-hairline: #44403c;
+  --sl-color-bg: #0f172a;
+  --sl-color-bg-nav: rgba(15, 23, 42, 0.8);
+  --sl-color-bg-sidebar: #0f172a;
+  --sl-color-hairline-light: #1e293b;
+  --sl-color-hairline: #334155;
 }
 
 /* ── Global ────────────────────────────────────────────────────── */
@@ -41,7 +48,7 @@ html {
 }
 
 body {
-  font-weight: 400;
+  font-weight: 300;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
 }
@@ -51,6 +58,7 @@ body {
 header.header {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--sl-color-hairline-light);
 }
 
 .site-title {
@@ -60,37 +68,102 @@ header.header {
 
 /* ── Sidebar ───────────────────────────────────────────────────── */
 
-nav.sidebar a {
+/* Remove Starlight default borders and decorations */
+.sidebar-content ul {
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* All sidebar links — clean rounded pill, slate text */
+nav.sidebar a,
+.sidebar-content a {
   font-weight: 400;
+  font-size: 0.875rem;
+  color: #64748b !important;               /* slate-500 */
   transition: color 120ms ease;
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.75rem !important;
+  border-inline-start: none !important;
 }
 
-nav.sidebar a[aria-current='page'] {
-  font-weight: 600;
+nav.sidebar a:hover,
+.sidebar-content a:hover {
+  color: #f59e0b !important;               /* amber-500 */
+  background: transparent !important;
 }
 
-/* ── Landing page hero ─────────────────────────────────────────── */
+/* Active page — pill with background, exactly like OpenResponses */
+nav.sidebar a[aria-current='page'],
+.sidebar-content a[aria-current='page'] {
+  font-weight: 500 !important;
+  color: #0f172a !important;               /* slate-900 */
+  background: #f1f5f9 !important;          /* slate-100 */
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  outline: 1px solid #cbd5e1;              /* slate-300 */
+  border-radius: 0.5rem;
+  border-inline-start: none !important;
+}
+
+:root[data-theme='dark'] nav.sidebar a,
+:root[data-theme='dark'] .sidebar-content a {
+  color: #94a3b8 !important;               /* slate-400 */
+}
+
+:root[data-theme='dark'] nav.sidebar a:hover,
+:root[data-theme='dark'] .sidebar-content a:hover {
+  color: #f59e0b !important;
+}
+
+:root[data-theme='dark'] nav.sidebar a[aria-current='page'],
+:root[data-theme='dark'] .sidebar-content a[aria-current='page'] {
+  background: #1e293b !important;          /* slate-800 */
+  outline-color: #334155;                  /* slate-700 */
+  color: #e2e8f0 !important;              /* slate-200 */
+}
+
+/* Group labels (Guides, Reference) */
+.sidebar-content .group-label span {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #0f172a;
+}
+
+:root[data-theme='dark'] .sidebar-content .group-label span {
+  color: #e2e8f0;
+}
+
+/* Nested sidebar items: indent but no extra border */
+.sidebar-content details > ul {
+  margin-inline-start: 0 !important;
+  padding-inline-start: 0.5rem !important;
+}
+
+.sidebar-content details > ul a {
+  font-size: 0.8125rem;
+}
+
+/* ── Landing page ──────────────────────────────────────────────── */
 
 .landing {
-  margin: 0 0 1rem 0;
+  margin: 1rem 0 0.5rem 0;
   padding: 0;
 }
 
 .landing-title {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-size: clamp(4.5rem, 12vw, 8rem);
   font-weight: 900;
-  letter-spacing: -0.045em;
-  line-height: 1;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
   margin: 0;
   color: var(--sl-color-white);
 }
 
 .landing-tagline {
-  font-size: 1.25rem;
-  font-weight: 400;
+  font-size: 1.35rem;
+  font-weight: 300;
   color: var(--sl-color-gray-2);
-  margin: 0.75rem 0 0 0;
+  margin: 1rem 0 0 0;
   letter-spacing: -0.01em;
 }
 
@@ -98,17 +171,17 @@ nav.sidebar a[aria-current='page'] {
 
 .sl-markdown-content h1 {
   font-weight: 800;
-  letter-spacing: -0.03em;
-  font-size: 2.5rem;
-  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-size: 2.75rem;
+  line-height: 1.05;
   margin-top: 0;
 }
 
 .sl-markdown-content h2 {
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   font-size: 1.6rem;
-  margin-top: 2.5rem;
+  margin-top: 3rem;
 }
 
 .sl-markdown-content h3 {
@@ -117,103 +190,182 @@ nav.sidebar a[aria-current='page'] {
   font-size: 1.15rem;
 }
 
-.sl-markdown-content p,
+/* ── Body text — light and airy ────────────────────────────────── */
+
+.sl-markdown-content p {
+  line-height: 1.8;
+  font-weight: 300;
+  color: #1e293b;
+}
+
+:root[data-theme='dark'] .sl-markdown-content p {
+  color: #cbd5e1;
+}
+
 .sl-markdown-content li {
-  line-height: 1.7;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+.sl-markdown-content strong {
+  font-weight: 600;
 }
 
 /* ── Inline code ───────────────────────────────────────────────── */
 
 .sl-markdown-content :not(pre) > code {
-  background: #f5f5f4;
-  border: 1px solid #e7e5e4;
-  border-radius: 4px;
-  padding: 0.15em 0.35em;
-  font-size: 0.875em;
-  font-weight: 500;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  padding: 0.2em 0.4em;
+  font-size: 0.85em;
+  font-weight: 400;
 }
 
 :root[data-theme='dark'] .sl-markdown-content :not(pre) > code {
-  background: #1c1917;
-  border-color: #292524;
+  background: #1e293b;
+  border-color: #334155;
 }
 
-/* ── Code blocks — clean, no dots ──────────────────────────────── */
+/* ── Code blocks — clean and minimal ───────────────────────────── */
 
-/* Hide ALL code block headers (terminal dots, file names) */
 .expressive-code figcaption.header {
   display: none !important;
 }
 
-/* Clean code block container */
 .expressive-code figure.frame {
-  border-radius: 8px !important;
+  border-radius: 10px !important;
   border: 1px solid var(--sl-color-hairline-light) !important;
   box-shadow: none !important;
   overflow: hidden;
+  margin: 1.5rem 0 !important;
 }
 
 .expressive-code pre {
   border: none !important;
   border-radius: 0 !important;
-  padding: 1rem 1.25rem !important;
-  font-size: 0.875rem !important;
-  line-height: 1.65 !important;
+  padding: 1.25rem 1.5rem !important;
+  font-size: 0.85rem !important;
+  line-height: 1.7 !important;
   margin: 0 !important;
 }
 
 /* ── Tables ────────────────────────────────────────────────────── */
 
 .sl-markdown-content table {
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--sl-color-hairline-light);
 }
 
 .sl-markdown-content th {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
-/* ── Admonitions ───────────────────────────────────────────────── */
-
-.starlight-aside--tip {
-  border-color: var(--sl-color-accent);
-}
-
-/* ── Pagination links (Next / Previous) ────────────────────────── */
+/* ── Pagination links ──────────────────────────────────────────── */
 
 .pagination-links a {
   padding: 0.75rem 1rem !important;
 }
 
 .pagination-links .link-title {
-  font-size: 0.95rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
 }
 
-/* ── TOC ───────────────────────────────────────────────────────── */
+/* ── TOC (right sidebar) ──────────────────────────────────────── */
 
+/* "ON THIS PAGE" heading — uppercase tracking like OpenResponses */
+starlight-toc h2 {
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  color: #94a3b8 !important;              /* slate-400 */
+  margin-bottom: 0.75rem !important;
+}
+
+/* TOC list: left rail track */
+starlight-toc nav > ul {
+  position: relative;
+  padding-inline-start: 1.125rem !important;
+  border: none !important;
+}
+
+/* Vertical rail line */
+starlight-toc nav > ul::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.35);  /* slate-400/35 */
+}
+
+/* TOC links — slate-500 by default */
 starlight-toc a {
   font-size: 0.8rem;
+  font-weight: 400;
+  color: #64748b !important;              /* slate-500 */
+  transition: color 120ms ease;
+  position: relative;
+  display: block;
+  padding: 0.15rem 0 !important;
+  border: none !important;
+}
+
+starlight-toc a:hover {
+  color: #0f172a !important;              /* slate-900 */
+}
+
+:root[data-theme='dark'] starlight-toc a:hover {
+  color: #e2e8f0 !important;
+}
+
+/* Active TOC link — amber dot on the rail + bold */
+starlight-toc a[aria-current='true'] {
+  color: #0f172a !important;              /* slate-900 */
+  font-weight: 600 !important;
+}
+
+:root[data-theme='dark'] starlight-toc a[aria-current='true'] {
+  color: #e2e8f0 !important;
+}
+
+starlight-toc a[aria-current='true']::before {
+  content: '•';
+  position: absolute;
+  left: calc(-1.125rem - 2px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f59e0b;                         /* amber-500 */
+  font-size: 1.75em;
+  line-height: 1;
+}
+
+/* Nested TOC items (h3) */
+starlight-toc li li a {
+  font-size: 0.75rem !important;
+  padding-inline-start: 0.5rem !important;
+  color: #94a3b8 !important;              /* slate-400 */
+}
+
+/* ── Admonitions ───────────────────────────────────────────────── */
+
+.starlight-aside--tip {
+  border-color: #f59e0b;
+}
+
+.starlight-aside {
+  border-radius: 10px;
 }
 
 /* ── Landing page: hide Starlight's auto-generated h1 ─────────── */
 
-/* The page with our custom .landing div doesn't need Starlight's title */
-.sl-markdown-content:has(.landing) {
-  & > h1:first-child {
-    display: none;
-  }
-}
-
-/* Also hide the content-panel title wrapper on the landing page */
-.content-panel:has(+ .content-panel .landing) h1 {
-  display: none;
-}
-
-/* Hide the entire first content-panel (title bar) when landing is present */
 main:has(.landing) > .content-panel:first-child {
   display: none;
 }
