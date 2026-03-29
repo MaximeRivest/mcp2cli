@@ -1,11 +1,10 @@
 ---
 title: mcp2cli
 description: Turn any MCP server into a CLI
+hero:
+  title: mcp2cli
+  tagline: Turn any MCP server into a command-line tool.
 ---
-
-# mcp2cli
-
-**Turn any MCP server into a command-line tool.**
 
 MCP (Model Context Protocol) is an open standard that lets services describe their capabilities in a machine-readable way. More and more services are exposing MCP interfaces — databases, APIs, AI tools, local apps.
 
