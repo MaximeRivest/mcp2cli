@@ -19,14 +19,17 @@ func NewRootCommand(opts Options) (*cobra.Command, error) {
 		return nil, err
 	}
 
-	use := "mcp2cli"
+	use := opts.Invocation.ProgramName
+	if use == "" {
+		use = "mcp2cli"
+	}
 	short := "Turn any MCP server into a CLI"
-	long := `mcp2cli turns MCP servers into delightful command-line tools.
+	long := fmt.Sprintf(`%s turns MCP servers into delightful command-line tools.
 
 Quick start:
-  mcp2cli add time 'npx -y @modelcontextprotocol/server-time'
-  mcp2cli time tools
-  mcp2cli time get-current-time --timezone America/New_York`
+  %s add time 'npx -y @modelcontextprotocol/server-time'
+  %s time tools
+  %s time get-current-time --timezone America/New_York`, use, use, use, use)
 	if opts.Invocation.IsExposedCommand() {
 		use = opts.Invocation.ExposedCommandName
 		short = fmt.Sprintf("Bound CLI for exposed command %q", opts.Invocation.ExposedCommandName)

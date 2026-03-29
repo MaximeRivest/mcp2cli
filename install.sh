@@ -85,6 +85,25 @@ setup_completions() {
 
 setup_completions
 
+# ── short alias ──────────────────────────────────────────────────────────────
+
+setup_alias() {
+  # Only create the alias if "mcp" is not already a command
+  if command -v mcp >/dev/null 2>&1; then
+    return
+  fi
+
+  TARGET="${INSTALL_DIR}/mcp"
+  if [ -w "$INSTALL_DIR" ]; then
+    ln -sf "${INSTALL_DIR}/${BINARY}" "$TARGET"
+  else
+    sudo ln -sf "${INSTALL_DIR}/${BINARY}" "$TARGET"
+  fi
+  echo "Also available as: mcp"
+}
+
+setup_alias
+
 # ── verify ───────────────────────────────────────────────────────────────────
 
 VERSION=$(mcp2cli version 2>/dev/null | head -n1 || echo "installed")
@@ -92,7 +111,7 @@ echo ""
 echo "✓ mcp2cli ${VERSION}"
 echo ""
 echo "Get started:"
-echo "  mcp2cli add time 'uvx mcp-server-time'"
+echo "  mcp2cli add time 'npx -y @modelcontextprotocol/server-time'"
 echo "  mcp2cli time tools"
 echo ""
 echo "Open a new terminal for tab completions to take effect."

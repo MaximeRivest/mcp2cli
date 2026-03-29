@@ -20,7 +20,7 @@ func DetectInvocation(argv0 string) Invocation {
 	base = stripExecutableSuffix(base)
 
 	invocation := Invocation{ProgramName: base}
-	if base == "" || base == "mcp2cli" {
+	if base == "" || base == "mcp2cli" || base == "mcp" {
 		return invocation
 	}
 
