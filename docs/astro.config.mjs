@@ -4,8 +4,7 @@ import mdx from "@astrojs/mdx";
 import expressiveCode from "astro-expressive-code";
 
 export default defineConfig({
-  site: "https://maximerivest.github.io",
-  base: "/mcptocli",
+  site: "https://mcptocli.com",
   output: "static",
   integrations: [
     expressiveCode({

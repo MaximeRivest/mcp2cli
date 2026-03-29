@@ -31,11 +31,10 @@ const groups = [
   { heading: "Reference", items: sidebar.slice(10) },
 ];
 
-const base = "/mcptocli";
 const isActive = (href: string) => {
-  const hrefPath = (base + href).replace(/\/$/, "") || base;
-  const cleanPath = currentPath.replace(/\/$/, "") || base;
-  return hrefPath === cleanPath || (hrefPath !== base && cleanPath.startsWith(hrefPath));
+  const hrefPath = href.replace(/\/$/, "") || "/";
+  const cleanPath = currentPath.replace(/\/$/, "") || "/";
+  return hrefPath === cleanPath || (hrefPath !== "/" && cleanPath.startsWith(hrefPath));
 };
 ---
 
@@ -76,7 +75,7 @@ const isActive = (href: string) => {
                         "bg-slate-100 font-medium text-slate-900 shadow-inner outline outline-slate-300": isActive(item.href),
                       },
                     ]}
-                    href={`${base}${item.href}`}
+                    href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
                   >
                     {item.label}

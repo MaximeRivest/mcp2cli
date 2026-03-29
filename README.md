@@ -1,6 +1,6 @@
 # mcptocli: Turn any MCP server into a CLI
 
-📖 **[Documentation](https://maximerivest.github.io/mcptocli/)**
+📖 **[Documentation](https://mcptocli.com)**
 
 If [mcp2py](https://github.com/maximerivest/mcp2py) turns an MCP server into a Python module, `mcptocli` turns an MCP server into a command-line tool you can use from any terminal.
 
