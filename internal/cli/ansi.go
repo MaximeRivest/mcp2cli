@@ -83,33 +83,30 @@ func termWidth() int {
 	return w
 }
 
-// wordWrap wraps text to fit within maxWidth, adding indent to continuation lines.
+// wordWrap wraps text to fit within maxWidth, adding indent to each line.
+// Blank lines between paragraphs are preserved.
 func wordWrap(text string, maxWidth int, indent string) string {
 	if maxWidth <= 0 {
 		maxWidth = 80
 	}
-	contentWidth := maxWidth - len(indent)
-	if contentWidth < 20 {
-		contentWidth = 20
-	}
 
 	var result strings.Builder
-	paragraphs := strings.Split(text, "\n")
-	for i, para := range paragraphs {
+	lines := strings.Split(text, "\n")
+	for i, line := range lines {
 		if i > 0 {
 			result.WriteString("\n")
 		}
-		para = strings.TrimSpace(para)
-		if para == "" {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			// Preserve blank line as paragraph separator
 			continue
 		}
-		// Don't wrap short lines or bullet points
-		if len(para) <= contentWidth {
-			result.WriteString(indent + para)
+		if len(indent)+len(line) <= maxWidth {
+			result.WriteString(indent + line)
 			continue
 		}
 		// Word wrap
-		words := strings.Fields(para)
+		words := strings.Fields(line)
 		lineLen := 0
 		firstWord := true
 		for _, word := range words {
